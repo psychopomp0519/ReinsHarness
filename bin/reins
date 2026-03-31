@@ -89,10 +89,43 @@ register_all_builtin() {
   ensure_dirs
   local count=0
 
-  # Built-in skills
+  # Built-in skills (full reins- prefixed names)
   for skill_dir in "$REINS_HOME"/skills/*/; do
     if [[ -f "${skill_dir}SKILL.md" ]]; then
       register_skill "$skill_dir"
+      count=$((count + 1))
+    fi
+  done
+
+  # Short-name aliases so /mode, /pack, /snapshot etc. work
+  # Maps: short-name → reins-<name> skill directory
+  local -A aliases=(
+    ["mode"]="reins-mode"
+    ["pack"]="reins-pack"
+    ["merge"]="reins-merge"
+    ["snapshot"]="reins-snapshot"
+    ["perf"]="reins-perf"
+    ["briefing"]="reins-briefing"
+    ["learn"]="reins-learn"
+    ["convert-plan"]="reins-convert-plan"
+    ["plan"]="reins-plan-mode"
+    ["dev"]="reins-dev-mode"
+    ["review"]="reins-review-mode"
+    ["discuss"]="reins-discuss-mode"
+    ["cleanup"]="reins-cleanup-mode"
+    ["security"]="reins-security-mode"
+    ["retro"]="reins-retro-mode"
+    ["deploy"]="reins-deploy-mode"
+    ["bridge"]="reins-bridge-mode"
+  )
+
+  for short in "${!aliases[@]}"; do
+    local full="${aliases[$short]}"
+    local source="$REINS_HOME/skills/$full"
+    local target="$CLAUDE_DIR/skills/$short"
+    if [[ -d "$source" ]]; then
+      [[ -L "$target" ]] && rm "$target"
+      ln -sf "$source" "$target"
       count=$((count + 1))
     fi
   done
