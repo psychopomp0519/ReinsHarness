@@ -1,0 +1,8 @@
+name: marketing
+version: "1.0.0"
+description: "Marketing pack for copywriting, SEO optimization, A/B testing, and content strategy"
+author: "Reins Team"
+keywords: [marketing, copywriting, seo, ab-testing, content-strategy]
+dependencies: []
+skills:
+  - marketing-copy-review

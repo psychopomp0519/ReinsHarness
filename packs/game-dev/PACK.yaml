@@ -1,0 +1,13 @@
+name: game-dev
+version: "1.0.0"
+description: "Game development tools — game loops, balancing, level design, QA, playtesting"
+author: "Reins Team"
+keywords: [game, gamedev, unity, godot, balancing, level-design]
+dependencies: []
+skills:
+  - game-balance-check
+  - game-loop-review
+  - game-level-design
+agents:
+  - game-designer
+  - playtester

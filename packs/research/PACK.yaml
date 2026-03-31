@@ -1,0 +1,8 @@
+name: research
+version: "1.0.0"
+description: "Academic paper structure analysis, literature review, statistical analysis, and citation management"
+author: "Reins Team"
+keywords: [research, academic, paper, literature-review, statistics, citations]
+dependencies: []
+skills:
+  - research-paper-structure

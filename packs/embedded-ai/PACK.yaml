@@ -1,0 +1,8 @@
+name: embedded-ai
+version: "1.0.0"
+description: "RAG pipeline design, prompt engineering, agent architecture, and vector database optimization"
+author: "Reins Team"
+keywords: [ai, rag, prompt-engineering, agent, vector-db, llm]
+dependencies: []
+skills:
+  - ai-rag-review

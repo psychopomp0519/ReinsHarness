@@ -1,0 +1,8 @@
+name: i18n-l10n
+version: "1.0.0"
+description: "Multi-language translation quality, string extraction, RTL support, and date/currency format validation"
+author: "Reins Team"
+keywords: [i18n, l10n, internationalization, localization, translation, rtl]
+dependencies: []
+skills:
+  - i18n-coverage-check

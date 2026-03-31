@@ -1,0 +1,17 @@
+name: novel-writing
+version: "1.0.0"
+description: "Creative writing tools — world-building, characters, plot structure, writing/revision modes"
+author: "Reins Team"
+keywords: [writing, novel, creative, fiction, characters, worldbuilding]
+dependencies: []
+skills:
+  - novel-character-check
+  - novel-plot-structure
+  - novel-worldbuilding
+  - novel-style-review
+modes:
+  - name: writing
+    file: modes/writing.yaml
+agents:
+  - story-critic
+  - editor

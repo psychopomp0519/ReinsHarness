@@ -1,0 +1,8 @@
+name: legal
+version: "1.0.0"
+description: "Contract analysis, terms of service review, compliance checking, and privacy policy evaluation"
+author: "Reins Team"
+keywords: [legal, contract, compliance, privacy, terms-of-service]
+dependencies: []
+skills:
+  - legal-contract-review

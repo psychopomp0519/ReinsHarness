@@ -1,0 +1,8 @@
+name: audio
+version: "1.0.0"
+description: "Audio processing, sound design, mixing and mastering analysis"
+author: "Reins Team"
+keywords: [audio, sound-design, mixing, mastering, audio-processing]
+dependencies: []
+skills:
+  - audio-mix-review

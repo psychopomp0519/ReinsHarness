@@ -1,0 +1,8 @@
+name: mobile-app
+version: "1.0.0"
+description: "Mobile app development pack for native and cross-platform apps, performance optimization, and app store review"
+author: "Reins Team"
+keywords: [mobile, ios, android, cross-platform, performance, app-store]
+dependencies: []
+skills:
+  - mobile-perf-check

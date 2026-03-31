@@ -1,0 +1,8 @@
+name: hardware
+version: "1.0.0"
+description: "Circuit design review, firmware analysis, communication protocols, and sensor integration"
+author: "Reins Team"
+keywords: [hardware, circuit, firmware, protocols, sensors, embedded]
+dependencies: []
+skills:
+  - hardware-firmware-review

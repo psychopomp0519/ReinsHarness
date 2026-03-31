@@ -1,0 +1,8 @@
+name: tech-docs
+version: "1.0.0"
+description: "Technical documentation pack for API docs, tutorials, changelogs, and architecture diagrams"
+author: "Reins Team"
+keywords: [documentation, api-docs, tutorials, changelogs, diagrams]
+dependencies: []
+skills:
+  - docs-quality-check

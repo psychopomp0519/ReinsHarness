@@ -1,0 +1,8 @@
+name: education
+version: "1.0.0"
+description: "Education pack for curriculum design, quiz generation, and interactive learning materials"
+author: "Reins Team"
+keywords: [education, curriculum, quizzes, interactive, learning-materials]
+dependencies: []
+skills:
+  - edu-curriculum-check

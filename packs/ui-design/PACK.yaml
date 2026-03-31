@@ -1,0 +1,19 @@
+name: ui-design
+version: "1.0.0"
+description: "UI/UX design quality tools — component design, accessibility, design systems, visual regression"
+author: "Reins Team"
+keywords: [ui, ux, design, accessibility, frontend, components]
+dependencies: []
+skills:
+  - ui-design-audit
+  - ui-accessibility-check
+  - ui-component-review
+agents:
+  - ui-critic
+review_layers:
+  - layer: 6
+    name: "Browser Verification"
+    description: "Visual regression + responsive + interaction testing"
+  - layer: 7
+    name: "Design Verification"
+    description: "Nielsen heuristics + anti-pattern detection + accessibility"

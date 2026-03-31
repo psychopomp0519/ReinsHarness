@@ -1,0 +1,8 @@
+name: api-dev
+version: "1.0.0"
+description: "API development pack for REST and GraphQL design, authentication, database integration, and performance tuning"
+author: "Reins Team"
+keywords: [api, rest, graphql, authentication, database, performance]
+dependencies: []
+skills:
+  - api-design-review

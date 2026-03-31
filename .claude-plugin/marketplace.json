@@ -1,0 +1,24 @@
+{
+  "listing": {
+    "title": "Reins — AI Agent Harness",
+    "subtitle": "Mode-based workflow orchestration for Claude Code",
+    "category": "productivity",
+    "tags": ["harness", "workflow", "modes", "planning", "review", "multi-agent"],
+    "icon": "🐴",
+    "screenshots": [],
+    "featured": false
+  },
+  "pricing": {
+    "model": "free",
+    "price": 0
+  },
+  "support": {
+    "documentation": "https://github.com/reins-ai/reins/blob/main/README.md",
+    "issues": "https://github.com/reins-ai/reins/issues",
+    "discussions": "https://github.com/reins-ai/reins/discussions"
+  },
+  "compatibility": {
+    "platforms": ["macos", "linux", "windows"],
+    "minVersion": "1.0.0"
+  }
+}

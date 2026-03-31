@@ -1,0 +1,36 @@
+{
+  "name": "reins",
+  "displayName": "Reins — AI Agent Harness",
+  "version": "0.1.0",
+  "description": "Mode-based integrated AI agent harness with 9 modes, 17 domain packs, and 3-tier rule system",
+  "author": "Reins Team",
+  "license": "MIT",
+  "repository": "https://github.com/reins-ai/reins",
+  "homepage": "https://github.com/reins-ai/reins",
+  "keywords": [
+    "harness",
+    "workflow",
+    "modes",
+    "planning",
+    "code-review",
+    "multi-agent",
+    "security",
+    "deployment"
+  ],
+  "engines": {
+    "claude-code": ">=1.0.0",
+    "node": ">=18.0.0"
+  },
+  "capabilities": {
+    "skills": true,
+    "agents": true,
+    "hooks": true,
+    "statusLine": true,
+    "modes": true
+  },
+  "entryPoints": {
+    "install": "install.sh",
+    "cli": "bin/reins",
+    "statusLine": "core/statusline/reins-status.sh"
+  }
+}

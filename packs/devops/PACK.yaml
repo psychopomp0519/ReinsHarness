@@ -1,0 +1,8 @@
+name: devops
+version: "1.0.0"
+description: "DevOps pack for CI/CD pipelines, infrastructure as code, monitoring, and incident response"
+author: "Reins Team"
+keywords: [devops, cicd, infrastructure-as-code, monitoring, incident-response]
+dependencies: []
+skills:
+  - devops-pipeline-review

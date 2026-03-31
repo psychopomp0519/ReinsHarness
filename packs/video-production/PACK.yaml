@@ -1,0 +1,8 @@
+name: video-production
+version: "1.0.0"
+description: "Video editing scripts, subtitle management, storyboard analysis, and metadata optimization"
+author: "Reins Team"
+keywords: [video, editing, subtitles, storyboard, metadata, production]
+dependencies: []
+skills:
+  - video-metadata-review

@@ -1,0 +1,29 @@
+{
+  "name": "reins",
+  "version": "0.1.0",
+  "description": "Mode-based integrated AI agent harness for Claude Code",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "reins": "./bin/reins"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:hooks": "bash scripts/build-hooks.sh",
+    "build:all": "npm run build && npm run build:hooks",
+    "clean": "rm -rf dist hooks/dist"
+  },
+  "keywords": [
+    "claude-code",
+    "ai-agent",
+    "harness",
+    "mode-based",
+    "workflow"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "typescript": "^5.4.0"
+  }
+}

@@ -1,0 +1,8 @@
+name: data-science
+version: "1.0.0"
+description: "Data science pack for EDA, feature engineering, modeling, and experiment management"
+author: "Reins Team"
+keywords: [data-science, eda, feature-engineering, modeling, experiment-management]
+dependencies: []
+skills:
+  - data-eda-check
