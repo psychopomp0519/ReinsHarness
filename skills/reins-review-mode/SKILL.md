@@ -85,19 +85,31 @@ Issues found?
 └─ No  → Review Passed
 ```
 
-After each iteration, report:
+After each iteration, report as severity table:
 
 ```
--- Review Iteration N/5 ----------
-Layer 1 (Static):       pass
-Layer 2 (Tests):        pass (24/24)
-Layer 3 (Plan):         1 issue
-Layer 4 (AI Review):    pass
-Layer 5 (Architecture): pass
-Layer 6 (Browser):      skipped
-Layer 7 (Design):       skipped
-----------------------------------
-Issues: 1 remaining → fixing...
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[Review] Iteration N/5
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+| Layer | 상태 | 이슈 | CRITICAL | HIGH |
+|-------|------|------|----------|------|
+| 1 Static | PASS | 0 | 0 | 0 |
+| 2 Tests | PASS | 0/24 | 0 | 0 |
+| 3 Plan | FAIL | 1 | 0 | 1 |
+| 4 AI Review | PASS | 0 | 0 | 0 |
+| 5 Architecture | PASS | 0 | 0 | 0 |
+| 6 Browser | SKIP | - | - | - |
+| 7 Design | SKIP | - | - | - |
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+이슈: 1 remaining → fixing...
+```
+
+When issues are fixed and re-verified, show before/after comparison:
+
+```
+| Layer | 수정 전 | 수정 후 |
+|-------|---------|---------|
+| 3 Plan | 1 issue | PASS |
 ```
 
 ### Max Iterations Reached

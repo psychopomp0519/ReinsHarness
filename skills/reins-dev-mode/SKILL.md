@@ -45,16 +45,20 @@ After completing each Task, verify ALL of the following:
 4. **Acceptance Criteria**: Check the Task's stated criteria. Met.
 5. **Architecture**: Changes respect module boundaries and patterns.
 
-Report results as:
+Report results as a severity table:
 
 ```
--- Verification --------------------
-Lint:       pass
-Types:      pass
-Tests:      pass (12/12)
-Criteria:   "API returns 200 on valid input" — met
-Architecture: no boundary violations
-------------------------------------
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[Verification] Task N.M
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+| 항목 | 상태 | 이슈 |
+|------|------|------|
+| Lint | PASS | 0 |
+| Types | PASS | 0 |
+| Tests | PASS | 12/12 |
+| Criteria | PASS | met |
+| Architecture | PASS | 0 |
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 If ANY item fails:

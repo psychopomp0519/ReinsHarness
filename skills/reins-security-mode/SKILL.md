@@ -117,6 +117,43 @@ A finding is **High** if it matches:
 
 All other CWE pattern matches are **Medium**.
 
+## Output Format
+
+Report each layer result as:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[Security Audit] Layer N/6
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+| Layer | 상태 | CRITICAL | HIGH | MEDIUM | LOW |
+|-------|------|----------|------|--------|-----|
+| 1 Secrets | PASS | 0 | 0 | 0 | 0 |
+| 2 CVE | WARN | 0 | 2 | 1 | 0 |
+| 3 SAST | FAIL | 1 | 0 | 3 | 0 |
+| 4 STRIDE | PASS | 0 | 0 | 0 | 0 |
+| 5 DAST | SKIP | - | - | - | - |
+| 6 Infra | PASS | 0 | 0 | 1 | 2 |
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+List each finding with numbered counter and category tag:
+
+```
+- [1/4] [CRITICAL] path/to/auth.ts:42 — Hardcoded API key
+- [2/4] [HIGH] path/to/api.ts:15 — SQL injection via string concatenation
+- [3/4] [MEDIUM] package.json — lodash@4.17.20 has known CVE
+- [4/4] [MEDIUM] src/utils.ts:8 — innerHTML without sanitization
+```
+
+After fixes, show before/after:
+
+```
+| 항목 | 수정 전 | 수정 후 |
+|------|---------|---------|
+| auth.ts:42 CRITICAL | Hardcoded key | PASS (moved to .env) |
+| api.ts:15 HIGH | SQL injection | PASS (parameterized) |
+```
+
 ## Commands
 
 - `/security scan` — Full 6-layer audit
