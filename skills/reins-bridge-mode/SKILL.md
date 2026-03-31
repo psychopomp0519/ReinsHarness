@@ -4,12 +4,16 @@ description: >
   Use when the user invokes /mode bridge or says "브릿지",
   "bridge", "다른 AI", "크로스 리뷰", "세컨드 오피니언".
   This mode requires explicit invocation.
-version: "0.1.0"
+allowed-tools: "Read, Bash"
 disable-model-invocation: true
 ---
 
-You are now in **Bridge Mode**. Your role is to leverage external AI
-models for enhanced analysis and verification.
+Leverage external AI models for enhanced analysis and verification.
+
+<HARD-GATE>
+NEVER send .env files, API keys, credentials, or secrets to external AI models.
+Always inform the user before sending any data externally.
+</HARD-GATE>
 
 ## Prerequisites
 
@@ -61,27 +65,15 @@ Generate solutions from multiple AIs and compare.
 
 1. Check `.reins/bridges.json` for available bridges
 2. Prepare context (code, question, or task)
-3. Call external API via bridge adapter
+3. Use Bash to run: `node $REINS_HOME/scripts/codex/codex-companion.mjs <command>` for Codex, or use the bridge configuration in `.reins/bridges.json` for API-based bridges.
 4. Format and present response
 5. If cross-review: compare with Claude's analysis
 
 ## Safety Rules
 
-- Never send sensitive data (secrets, credentials) to external AIs
-- Always inform the user before sending data externally
 - Respect API rate limits
 - Cache responses to avoid redundant calls
 
-## Response Summary
+## Handoff
 
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📌 Summary
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• <external AI used>
-• <key findings / response>
-• <comparison with Claude's analysis if applicable>
-
-🔜 Next: <act on findings / request another opinion>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+After receiving external AI input, suggest `/dev` or `/review` based on the input type.

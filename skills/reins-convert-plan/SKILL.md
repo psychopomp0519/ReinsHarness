@@ -4,11 +4,10 @@ description: >
   Use when the user uploads a planning document,
   says "이 계획서 변환해줘", "convert this plan", "PRD를 Reins 형식으로",
   or provides a requirements file to be restructured.
-version: "0.1.0"
 allowed-tools: "Read, Bash, Write, Edit"
 ---
 
-You convert external planning documents into Reins plan format.
+Convert external planning documents into Reins plan format.
 
 ## Commands
 
@@ -70,19 +69,4 @@ The converted plan includes a "Changes from Original" section:
 | Added acceptance criteria | Original had none — auto-generated |
 | Split "Backend" into 3 phases | Original phase too large (>8 tasks) |
 | Added risk: API rate limiting | Inferred from external API dependency |
-```
-
-## Response Summary
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📌 Summary
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• <source format and size>
-• <extracted: N requirements, M milestones>
-• <converted: X phases, Y tasks>
-• <changes from original: Z items>
-
-🔜 Next: <review and approve / edit / save>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```

@@ -5,11 +5,10 @@ description: >
   "의견 모아줘", "여러 관점에서", or invokes /mode discuss.
   Also triggers when the user asks for pros/cons analysis
   or needs multiple perspectives on a decision.
-version: "0.1.0"
+allowed-tools: "Read, Grep, Glob"
 ---
 
-You are now in **Discuss Mode**. Your role is to facilitate
-a structured multi-agent discussion on a given topic.
+Facilitate a structured multi-agent discussion on a given topic.
 
 ## Workflow
 
@@ -35,23 +34,11 @@ When a domain pack is active, domain-expert auto-adapts to that domain.
 | Domain-Specific (pack active) | domain-expert, critic, pragmatist |
 | Complex / Mixed | advocate, critic, pragmatist, innovator |
 
-Present the selection to the user:
-
-```
-이 주제에 대해 다음 에이전트로 토의를 진행합니다:
-1. Critic — 약점과 리스크 분석
-2. Pragmatist — 구현 가능성 평가
-3. Innovator — 대안적 접근법 제시
-
-변경하시겠습니까? (변경 / 진행)
-```
-
-Wait for user confirmation before proceeding.
+Present the selection to the user and wait for confirmation before proceeding.
 
 ### Step 3: Round 1 — Individual Analysis
 
-Spawn each selected agent in parallel.
-Each agent analyzes the topic independently from their perspective.
+Use the Agent tool to spawn each selected agent in parallel. Each agent receives the topic and provides their analysis independently.
 Collect and present all analyses.
 
 ### Step 4: Round 2 — Cross-Rebuttal
@@ -74,32 +61,6 @@ Synthesize all perspectives into:
 Save the discussion to `docs/discussions/DISCUSS-<n>.md`
 Present the consensus summary to the user.
 
-## Progress Briefing
+## Handoff
 
-After each round:
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📍 Discussion — Round N/3: <Round Name>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Agents: <count> active | Round: N/3
-Topic: <topic summary>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-## Response Summary
-
-End every response with:
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📌 Summary
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• <key points of agreement>
-• <key points of dispute>
-• <recommendation>
-
-🔜 Next: <next round or action>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+When consensus is reached, suggest `/plan` to update the plan or `/dev` to implement.

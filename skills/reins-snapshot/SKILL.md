@@ -3,19 +3,15 @@ name: reins-snapshot
 description: >
   Use when the user says "스냅샷", "snapshot", "/snapshot save",
   or wants to create a restore point.
-version: "0.1.0"
+allowed-tools: "Read, Bash"
 ---
 
-You manage project snapshots.
+Manage project snapshots using git tags with `reins-snapshot-` prefix.
 
 ## Commands
 
-- `/snapshot save [name]` — Create a named snapshot
-- `/snapshot restore <name>` — Restore a snapshot
-- `/snapshot list` — List all snapshots
-- `/snapshot compare <a> <b>` — Compare two snapshots
-- `/snapshot delete <name>` — Delete a snapshot
-
-## Implementation
-
-Snapshots use git tags with `reins-snapshot-` prefix.
+- `/snapshot save [name]` — Create a named snapshot (`git tag reins-snapshot-<name>`)
+- `/snapshot restore <name>` — Restore a snapshot (`git checkout reins-snapshot-<name>`)
+- `/snapshot list` — List all snapshots (`git tag -l 'reins-snapshot-*'`)
+- `/snapshot compare <a> <b>` — Compare two snapshots (`git diff reins-snapshot-<a>..reins-snapshot-<b>`)
+- `/snapshot delete <name>` — Delete a snapshot (`git tag -d reins-snapshot-<name>`)

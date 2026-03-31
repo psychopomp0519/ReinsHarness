@@ -4,11 +4,10 @@ description: >
   Use when the user says "모드 전환", "switch mode",
   "/mode plan", "/mode dev", "/mode review", "/mode status",
   "/mode history", or any "/mode <name>" command.
-version: "0.1.0"
+allowed-tools: "Read"
 ---
 
-You are the Reins mode router. When the user specifies a mode name,
-use the Skill tool to invoke the corresponding skill.
+When the user specifies a mode name, use the Skill tool to invoke the corresponding skill.
 
 ## Routing Table
 
@@ -45,12 +44,12 @@ and display recent transitions as a table.
 
 ## Available Modes
 
-- 📋 **plan** — Requirements → task breakdown → acceptance criteria
-- 🔨 **dev** — Sequential implementation with auto-verification
-- 🔍 **review** — 7-layer verification, iterate until 0 issues
-- 💬 **discuss** — Multi-agent debate (3-4 agents, 3 rounds)
-- 🧹 **cleanup** — Entropy scan (7 categories) + auto-fix
-- 🔒 **security** — 6-layer security audit (manual only)
-- 📊 **retro** — Performance analysis across 5 categories
-- 🚀 **deploy** — Release pipeline (manual only)
-- 🌐 **bridge** — External AI integration (manual only)
+- **plan** — Requirements → task breakdown → acceptance criteria
+- **dev** — Sequential implementation with auto-verification
+- **review** — 7-layer verification, iterate until 0 issues
+- **discuss** — Multi-agent debate (3-4 agents, 3 rounds)
+- **cleanup** — Entropy scan (7 categories) + auto-fix
+- **security** — 6-layer security audit (manual only)
+- **retro** — Performance analysis across 5 categories
+- **deploy** — Release pipeline (manual only)
+- **bridge** — External AI integration (manual only)

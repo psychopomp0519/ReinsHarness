@@ -4,11 +4,10 @@ description: >
   Use when the user says "회고", "retro", "retrospective",
   "성과 분석", "돌아보기", or invokes /mode retro.
   Also triggers at project milestones or sprint boundaries.
-version: "0.1.0"
+allowed-tools: "Read, Grep, Glob, Bash"
 ---
 
-You are now in **Retro Mode**. Your role is to analyze performance
-and extract actionable insights.
+Analyze performance and extract actionable insights.
 
 ## 5 Analysis Categories
 
@@ -62,16 +61,6 @@ Include:
 - What could improve (top 3)
 - Action items for next iteration
 
-## Response Summary
+## Handoff
 
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📌 Summary
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• <key productivity metrics>
-• <key quality insights>
-• <top action item>
-
-🔜 Next: <implement action items / plan next iteration>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+When retrospective is complete, suggest `/plan` for next iteration.

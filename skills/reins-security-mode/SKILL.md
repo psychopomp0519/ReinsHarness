@@ -4,12 +4,16 @@ description: >
   Use when the user invokes /mode security or says "보안 검토",
   "security audit", "보안 점검", "취약점 분석".
   This mode requires explicit invocation — it will not auto-trigger.
-version: "0.1.0"
+allowed-tools: "Read, Grep, Glob, Bash"
 disable-model-invocation: true
 ---
 
-You are now in **Security Mode**. Your role is to perform
-a comprehensive security audit through 6 verification layers.
+Perform a comprehensive security audit through 6 verification layers.
+
+<HARD-GATE>
+NEVER auto-fix security vulnerabilities without user approval.
+Present findings and wait for explicit confirmation before making changes.
+</HARD-GATE>
 
 ## 6-Layer Security Verification
 
@@ -21,25 +25,13 @@ Scan for exposed secrets:
 - Hardcoded credentials in config files
 - Base64-encoded secrets
 
-Commands:
-```
-grep -rn "password\|secret\|api_key\|token\|apikey" --include="*.{ts,js,py,go,java,rb}" .
-git log --all --diff-filter=A -- "*.env" ".env*"
-```
-
 ### Layer 2: Dependency CVEs
 
-Check for known vulnerabilities:
-```
-npm audit                    # Node.js
-pip-audit                    # Python
-cargo audit                  # Rust
-go vuln check               # Go
-```
+Check for known vulnerabilities using the project's dependency audit tools (e.g., `npm audit`, `pip-audit`, `cargo audit`).
 
 ### Layer 3: SAST (Static Application Security Testing)
 
-Check against CWE Top 25 (see reference/cwe-top-25.md):
+Check against CWE Top 25. Check the reference file at reference/cwe-top-25.md in this skill's directory.
 - Injection (SQL, command, XSS)
 - Buffer overflow / out-of-bounds
 - Authentication/authorization flaws
@@ -94,28 +86,6 @@ Check deployment configuration:
 | Medium | Potential vulnerability, fix within 1 week |
 | Low | Best practice violation, fix when convenient |
 
-## Progress Briefing
+## Handoff
 
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📍 Security Audit — Layer N/6: <Layer Name>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Critical: N | High: N | Medium: N | Low: N
-Layers complete: N/6
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-## Response Summary
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📌 Summary
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• <total findings by severity>
-• <layers completed>
-• <critical items requiring immediate action>
-
-🔜 Next: <fix critical issues / complete audit / generate report>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+When vulnerabilities found, suggest `/dev` to fix them.

@@ -4,11 +4,15 @@ description: >
   Use when the user says "개발 시작", "구현해줘",
   "build this", "implement", "코딩 시작", or invokes /mode dev.
   Also triggers after plan approval or when transitioning from plan mode.
-version: "0.1.0"
+allowed-tools: "Read, Grep, Glob, Bash, Write, Edit"
 ---
 
-You are now in **Dev Mode**. Your role is to implement the plan
-task-by-task with automatic verification after each task.
+Implement the plan task-by-task with automatic verification after each task.
+
+<HARD-GATE>
+Maximum 2 auto-fix attempts per verification failure.
+If still failing after 2 attempts, stop and suggest /review.
+</HARD-GATE>
 
 ## Workflow
 
@@ -44,13 +48,13 @@ After completing each Task, verify ALL of the following:
 Report results as:
 
 ```
-── Verification ──────────────────
-✅ Lint:       pass
-✅ Types:      pass
-✅ Tests:      pass (12/12)
-✅ Criteria:   "API returns 200 on valid input" — met
-✅ Architecture: no boundary violations
-──────────────────────────────────
+-- Verification --------------------
+Lint:       pass
+Types:      pass
+Tests:      pass (12/12)
+Criteria:   "API returns 200 on valid input" — met
+Architecture: no boundary violations
+------------------------------------
 ```
 
 If ANY item fails:
@@ -68,39 +72,6 @@ At Phase boundaries (all Tasks in a Phase complete):
 
 - If more Tasks remain → proceed to next Task
 - If all Tasks complete → announce completion, suggest Review Mode
-
-## Progress Briefing
-
-After each Task completion:
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📍 Dev Briefing — Task N/M: <Task Name>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[████████████░░░░░░░░] <progress>% (<completed>/<total> Tasks)
-
-✅ Completed: <list of done tasks>
-🔄 Next: Task X.Y — <description>
-⏱ Elapsed: <time>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-## Response Summary
-
-End every response (except simple 1-2 sentence replies) with:
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📌 Summary
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• <what was implemented>
-• <verification result>
-• <any issues found>
-
-🔜 Next: <next task or action>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
 
 ## Handoff
 

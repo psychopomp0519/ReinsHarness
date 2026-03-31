@@ -3,22 +3,18 @@ name: reins-deploy-mode
 description: >
   Use when the user invokes /mode deploy or says "배포", "deploy",
   "릴리스", "release". This mode requires explicit invocation.
-version: "0.1.0"
+allowed-tools: "Read, Bash"
 disable-model-invocation: true
 ---
 
-You are now in **Deploy Mode**. Your role is to manage the release
-pipeline safely and systematically.
+Manage the release pipeline safely and systematically.
+
+<HARD-GATE>
+NEVER deploy to production without explicit user approval.
+Always create a git tag before any deployment.
+</HARD-GATE>
 
 ## Deployment Stages
-
-```
-Preview → Staging → Production
-                        ↓
-                     Canary (optional)
-                        ↓
-                     Full Rollout
-```
 
 ### Stage 1: Preview
 
@@ -38,10 +34,10 @@ Preview → Staging → Production
 
 ### Stage 3: Production
 
-- **⚠️ Requires explicit user approval**
+- **Requires explicit user approval**
 - Create deployment tag: `deploy-v<version>-<date>`
 - Deploy to production
-- Monitor for 5 minutes
+- Run health check commands and verify the deployment status
 - Verify health checks pass
 
 ### Stage 4: Canary (optional)
@@ -70,22 +66,10 @@ If issues detected:
 
 ## Safety Rules
 
-- NEVER auto-deploy to production
-- Always create a git tag before deployment
 - Always run tests before any stage
 - Always create a rollback plan
 - Monitor after every deployment
 
-## Response Summary
+## Handoff
 
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📌 Summary
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• <deployment stage completed>
-• <test results>
-• <environment status>
-
-🔜 Next: <next stage / monitoring / rollback if needed>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+After successful deployment, suggest `/retro`. If rollback needed, suggest `/dev`.

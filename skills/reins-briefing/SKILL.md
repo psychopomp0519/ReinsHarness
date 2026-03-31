@@ -3,10 +3,10 @@ name: reins-briefing
 description: >
   Use when the user says "브리핑 설정", "/briefing",
   or wants to customize how progress updates are displayed.
-version: "0.1.0"
+allowed-tools: "Read"
 ---
 
-You configure progress briefing settings.
+Configure progress briefing settings.
 
 ## Commands
 
@@ -14,3 +14,5 @@ You configure progress briefing settings.
 - `/briefing off` — Disable progress briefings
 - `/briefing format <compact|full>` — Set briefing format
 - `/briefing frequency <always|milestone|manual>` — Set frequency
+
+Store settings in `.reins/config.json`.

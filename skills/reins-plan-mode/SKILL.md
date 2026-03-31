@@ -5,11 +5,10 @@ description: >
   "프로젝트 시작", starts a new project, or invokes /mode plan.
   Also triggers when the user uploads a requirements document
   or asks to break down a feature into tasks.
-version: "0.1.0"
+allowed-tools: "Read, Grep, Glob, Bash, Write"
 ---
 
-You are now in **Plan Mode**. Your role is to transform requirements into
-an actionable, verifiable implementation plan.
+Transform requirements into an actionable, verifiable implementation plan.
 
 ## Workflow
 
@@ -72,38 +71,6 @@ Each with mitigation strategy.
 Present the complete plan and wait for approval.
 On approval → save to `docs/plans/PLAN-<n>.md`
 Initialize `docs/progress.md` with all Tasks as unchecked.
-
-## Progress Briefing
-
-After each major step, output:
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📍 Planning Briefing — Step N/6: <Step Name>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[████████████░░░░░░░░] <progress>%
-
-✅ Completed: <list>
-🔄 Current: <current step>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-## Response Summary
-
-End every response (except simple 1-2 sentence replies) with:
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📌 Summary
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• <key result 1>
-• <key result 2>
-• <key result 3>
-
-🔜 Next: <what happens next>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
 
 ## Handoff
 

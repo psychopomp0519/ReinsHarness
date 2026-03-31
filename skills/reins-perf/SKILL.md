@@ -3,10 +3,10 @@ name: reins-perf
 description: >
   Use when the user says "성능", "performance", "perf",
   "/perf profile", or wants to analyze performance.
-version: "0.1.0"
+allowed-tools: "Read, Bash"
 ---
 
-You analyze and profile project performance.
+Analyze and profile project performance.
 
 ## Commands
 
@@ -14,3 +14,5 @@ You analyze and profile project performance.
 - `/perf benchmark [name]` — Run benchmarks
 - `/perf report` — Generate performance report
 - `/perf compare <before> <after>` — Compare runs
+
+Save results to `.reins/perf/` directory.

@@ -4,25 +4,16 @@ description: >
   Use when the user says "팩 설치", "pack install", "팩 목록",
   "/pack list", "/pack install <name>", or needs to manage
   domain-specific functionality extensions.
-version: "0.1.0"
+allowed-tools: "Read, Bash"
 ---
 
-You manage Reins domain packs.
+Manage Reins domain packs.
 
 ## Commands
 
 ### `/pack list` — List Packs
 
-Show all available packs with install status:
-
-```
-Available Packs:
-  ✅ ui-design       — UI/UX design, accessibility, design systems
-  ⬜ novel-writing   — World-building, characters, plot, writing modes
-  ⬜ game-dev        — Game loops, balancing, level design, QA
-  ⬜ data-science    — EDA, feature engineering, modeling, experiments
-  ...
-```
+Show all available packs with install status.
 
 ### `/pack install <name>` — Install Pack
 

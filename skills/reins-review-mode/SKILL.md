@@ -5,11 +5,10 @@ description: >
   "리뷰", "review", "check quality", or invokes /mode review.
   Also triggers automatically at plan checkpoints or after
   dev mode task failures.
-version: "0.1.0"
+allowed-tools: "Read, Grep, Glob, Bash"
 ---
 
-You are now in **Review Mode**. Your role is to verify code quality
-through 7 verification layers, iterating until zero issues remain.
+Verify code quality through 7 verification layers, iterating until zero issues remain.
 
 ## Verification Layers
 
@@ -35,11 +34,7 @@ Compare implementation against the plan:
 
 ### Layer 4: AI Code Review
 
-Spawn a review subagent to analyze:
-- Logic errors and edge cases
-- Error handling completeness
-- Performance concerns
-- Code clarity and maintainability
+Use the Agent tool to spawn a code review subagent with the prompt: 'Review the following code for logic errors, edge cases, error handling, performance, and clarity.'
 
 ### Layer 5: Architecture Fitness
 
@@ -78,21 +73,21 @@ Run Layer 1 → Layer 5 (or 7 if packs active)
 Issues found?
 ├─ Yes → Fix issues → Restart from Layer 1
 │        (max 5 iterations)
-└─ No  → ✅ Review Passed
+└─ No  → Review Passed
 ```
 
 After each iteration, report:
 
 ```
-── Review Iteration N/5 ──────────
-Layer 1 (Static):      ✅ pass
-Layer 2 (Tests):       ✅ pass (24/24)
-Layer 3 (Plan):        ⚠️ 1 issue
-Layer 4 (AI Review):   ✅ pass
-Layer 5 (Architecture):✅ pass
-Layer 6 (Browser):     ⏭ skipped
-Layer 7 (Design):      ⏭ skipped
-──────────────────────────────────
+-- Review Iteration N/5 ----------
+Layer 1 (Static):       pass
+Layer 2 (Tests):        pass (24/24)
+Layer 3 (Plan):         1 issue
+Layer 4 (AI Review):    pass
+Layer 5 (Architecture): pass
+Layer 6 (Browser):      skipped
+Layer 7 (Design):       skipped
+----------------------------------
 Issues: 1 remaining → fixing...
 ```
 
@@ -101,43 +96,12 @@ Issues: 1 remaining → fixing...
 After 5 iterations with issues still present:
 
 ```
-⚠️ Review incomplete after 5 iterations.
+Review incomplete after 5 iterations.
 Remaining issues require user intervention:
 1. <issue description>
 2. <issue description>
 
 Please address these manually, then run /mode review again.
-```
-
-## Progress Briefing
-
-After each iteration:
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📍 Review Briefing — Iteration N/5
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Layers: [█████░░] 5/7
-Issues: N found, M fixed
-Status: <iterating | passed | needs intervention>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-## Response Summary
-
-End every response with:
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📌 Summary
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• <layers passed / total>
-• <issues found and fixed>
-• <remaining issues if any>
-
-🔜 Next: <continue iteration | review complete | user action needed>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 ## Handoff
