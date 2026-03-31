@@ -67,3 +67,32 @@ Patterns that signal generic, AI-generated design. Avoid these aggressively.
 - ❌ Auto-playing media without pause control
 - ❌ CAPTCHA without audio alternative
 - ❌ Glassmorphism blur reducing text legibility for low-vision users
+
+## UX Writing
+
+- ❌ "Click here" or "Read more" as link text (non-descriptive, inaccessible)
+- ❌ Vague error messages ("Something went wrong") without cause or recovery action
+- ❌ Inconsistent terminology (mixing "delete"/"remove", "save"/"submit" arbitrarily)
+- ❌ Technical jargon in user-facing messages (error codes, stack traces, field names)
+- ❌ Wall-of-text instructions instead of progressive inline guidance
+- ❌ Placeholder text as the only label (disappears on input, fails accessibility)
+- ❌ Confirmation dialogs with "OK / Cancel" instead of verb-based actions ("Delete / Keep")
+
+## Progressive Disclosure
+
+- ❌ Everything visible at once — no information hierarchy or layering
+- ❌ All form fields shown upfront instead of multi-step or conditional reveal
+- ❌ Advanced settings at the same level as primary controls
+- ❌ Dense data tables with no expand/collapse or detail-on-demand
+- ❌ Tooltips containing critical information that should be visible by default
+- ❌ No visual distinction between primary, secondary, and tertiary actions
+
+## Modals
+
+- ❌ Modal used for non-critical information that could be inline or a toast
+- ❌ Nested modals (modal opening another modal)
+- ❌ Modal as primary navigation pattern (modal chains to complete a flow)
+- ❌ Modal without a clear dismiss mechanism (no close button, no backdrop click, no Escape key)
+- ❌ Full-page modal on desktop that should be a page or panel
+- ❌ Modal content requiring scrolling past two viewports
+- ❌ Confirmation modal for every action regardless of severity

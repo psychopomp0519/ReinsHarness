@@ -9,6 +9,12 @@ skills:
   - ui-accessibility-check
   - ui-component-review
   - ui-context-gather
+  - ui-polish
+  - ui-colorize
+  - ui-typeset
+  - ui-animate
+  - ui-adapt
+  - ui-harden
 agents:
   - ui-critic
 review_layers:

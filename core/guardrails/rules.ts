@@ -183,6 +183,60 @@ export const BUILTIN_RULES: GuardrailRule[] = [
       return null;
     },
   },
+
+  // R09: Block bash redirect to protected paths
+  {
+    id: "R09-no-redirect-protected",
+    name: "No Redirect to Protected Paths",
+    description: "Block bash redirects to .env, .git/, .ssh/ and other protected paths",
+    severity: "error",
+    toolPattern: /^Bash$/,
+    evaluate: (ctx) => {
+      if (!ctx.input) return null;
+      if (/>\s*\.env|tee\s+\.git\/|>\s*\.ssh\/|tee\s+\.ssh\/|>\s*\.git\//.test(ctx.input)) {
+        return { decision: "deny", message: "Redirect to protected path (.env, .git/, .ssh/) is blocked" };
+      }
+      return null;
+    },
+  },
+
+  // R10: Infrastructure file change warning
+  {
+    id: "R10-infra-file-warning",
+    name: "Infrastructure File Change Warning",
+    description: "Warn when modifying infrastructure files like package.json, Dockerfile, CI configs",
+    severity: "warning",
+    toolPattern: /^(Write|Edit)$/,
+    evaluate: (ctx) => {
+      if (!ctx.filePath) return null;
+      if (/(?:^|\/)(package\.json|Dockerfile|docker-compose\.ya?ml|tsconfig\.json|\.eslintrc.*)$|\.github\/workflows\//.test(ctx.filePath)) {
+        return {
+          decision: "ask",
+          message: "Modifying infrastructure file. Confirm this is intentional.",
+        };
+      }
+      return null;
+    },
+  },
+
+  // R11: Protected branch direct push warning
+  {
+    id: "R11-no-direct-push-protected",
+    name: "Protected Branch Direct Push Warning",
+    description: "Warn when pushing directly to main/master without a PR",
+    severity: "warning",
+    toolPattern: /^Bash$/,
+    evaluate: (ctx) => {
+      if (!ctx.input) return null;
+      if (/git\s+push\s+origin\s+(main|master)(?:\s|$)/.test(ctx.input)) {
+        return {
+          decision: "ask",
+          message: "Direct push to protected branch (main/master) detected. Consider using a PR instead.",
+        };
+      }
+      return null;
+    },
+  },
 ];
 
 /**
