@@ -4,7 +4,7 @@
 # ─────────────────────────────────────────────────────────
 set -euo pipefail
 
-REINS_REPO="https://github.com/reins-ai/reins.git"
+REINS_REPO="https://github.com/psychopomp0519/ReinsHarness.git"
 REINS_INSTALL_DIR="${REINS_INSTALL_DIR:-$HOME/.reins}"
 REINS_BRANCH="${REINS_BRANCH:-main}"
 

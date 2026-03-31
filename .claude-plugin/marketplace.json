@@ -13,9 +13,9 @@
     "price": 0
   },
   "support": {
-    "documentation": "https://github.com/reins-ai/reins/blob/main/README.md",
-    "issues": "https://github.com/reins-ai/reins/issues",
-    "discussions": "https://github.com/reins-ai/reins/discussions"
+    "documentation": "https://github.com/psychopomp0519/ReinsHarness/blob/main/README.md",
+    "issues": "https://github.com/psychopomp0519/ReinsHarness/issues",
+    "discussions": "https://github.com/psychopomp0519/ReinsHarness/discussions"
   },
   "compatibility": {
     "platforms": ["macos", "linux", "windows"],

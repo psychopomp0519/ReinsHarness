@@ -5,8 +5,8 @@
   "description": "Mode-based integrated AI agent harness with 9 modes, 17 domain packs, and 3-tier rule system",
   "author": "Reins Team",
   "license": "MIT",
-  "repository": "https://github.com/reins-ai/reins",
-  "homepage": "https://github.com/reins-ai/reins",
+  "repository": "https://github.com/psychopomp0519/ReinsHarness",
+  "homepage": "https://github.com/psychopomp0519/ReinsHarness",
   "keywords": [
     "harness",
     "workflow",
