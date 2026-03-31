@@ -44,6 +44,7 @@ git clone https://github.com/psychopomp0519/ReinsHarness.git ~/.reins
 cd ~/.reins
 npm install
 npm run build:all
+npm install -g @anthropic-ai/claude-code    # Claude Code 설치
 ln -sf ~/.reins/bin/reins ~/.local/bin/reins
 ```
 
