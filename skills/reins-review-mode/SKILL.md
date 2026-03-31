@@ -5,7 +5,6 @@ description: >
   "리뷰", "review", "check quality", or invokes /mode review.
   Also triggers automatically at plan checkpoints or after
   dev mode task failures.
-mode: true
 version: "0.1.0"
 ---
 
@@ -140,3 +139,9 @@ End every response with:
 🔜 Next: <continue iteration | review complete | user action needed>
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
+
+## Handoff
+
+- When all layers pass (review complete): suggest `/dev` to continue next phase, or `/deploy` if all phases done.
+- When issues found that need fixing: suggest `/dev` to fix, then re-run `/review`.
+- When issues need discussion: suggest `/discuss`.

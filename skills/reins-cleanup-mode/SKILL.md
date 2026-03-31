@@ -5,7 +5,6 @@ description: >
   "코드 정리", "리팩토링", or invokes /mode cleanup.
   Also triggers when code quality metrics degrade or after
   major feature completions.
-mode: true
 version: "0.1.0"
 ---
 

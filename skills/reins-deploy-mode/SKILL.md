@@ -3,7 +3,6 @@ name: reins-deploy-mode
 description: >
   Use when the user invokes /mode deploy or says "배포", "deploy",
   "릴리스", "release". This mode requires explicit invocation.
-mode: true
 version: "0.1.0"
 disable-model-invocation: true
 ---

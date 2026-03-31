@@ -4,7 +4,6 @@ description: >
   Use when the user invokes /mode bridge or says "브릿지",
   "bridge", "다른 AI", "크로스 리뷰", "세컨드 오피니언".
   This mode requires explicit invocation.
-mode: true
 version: "0.1.0"
 disable-model-invocation: true
 ---

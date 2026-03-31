@@ -5,7 +5,6 @@ description: >
   "프로젝트 시작", starts a new project, or invokes /mode plan.
   Also triggers when the user uploads a requirements document
   or asks to break down a feature into tasks.
-mode: true
 version: "0.1.0"
 ---
 
@@ -105,3 +104,9 @@ End every response (except simple 1-2 sentence replies) with:
 🔜 Next: <what happens next>
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
+
+## Handoff
+
+When the plan is approved and saved:
+- Suggest the user invoke `/dev` or `/reins-dev-mode` to start implementation.
+- If the user wants to discuss the plan first, suggest `/discuss`.

@@ -5,7 +5,6 @@ description: >
   "의견 모아줘", "여러 관점에서", or invokes /mode discuss.
   Also triggers when the user asks for pros/cons analysis
   or needs multiple perspectives on a decision.
-mode: true
 version: "0.1.0"
 ---
 

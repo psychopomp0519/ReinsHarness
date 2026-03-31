@@ -7,57 +7,50 @@ description: >
 version: "0.1.0"
 ---
 
-You manage mode transitions for the Reins harness.
+You are the Reins mode router. When the user specifies a mode name,
+use the Skill tool to invoke the corresponding skill.
 
-## Commands
+## Routing Table
 
-### `/mode <name>` — Switch Mode
+When the user says `/mode <name>` or asks to switch modes,
+invoke the corresponding skill using the Skill tool:
 
-Switch to the specified mode. Available modes:
+| User says | Invoke this skill |
+|-----------|-------------------|
+| `/mode plan` or "계획" | Invoke skill: `reins-plan-mode` |
+| `/mode dev` or "개발" | Invoke skill: `reins-dev-mode` |
+| `/mode review` or "검토" | Invoke skill: `reins-review-mode` |
+| `/mode discuss` or "토의" | Invoke skill: `reins-discuss-mode` |
+| `/mode cleanup` or "정리" | Invoke skill: `reins-cleanup-mode` |
+| `/mode security` or "보안" | Invoke skill: `reins-security-mode` |
+| `/mode retro` or "회고" | Invoke skill: `reins-retro-mode` |
+| `/mode deploy` or "배포" | Invoke skill: `reins-deploy-mode` |
+| `/mode bridge` or "브릿지" | Invoke skill: `reins-bridge-mode` |
 
-| Mode | Name | Auto | Manual Only |
-|------|------|------|-------------|
-| 📋 Plan | plan | ✅ | |
-| 🔨 Dev | dev | ✅ | |
-| 🔍 Review | review | ✅ | |
-| 💬 Discuss | discuss | ✅ | |
-| 🧹 Cleanup | cleanup | ✅ | |
-| 🔒 Security | security | | ✅ |
-| 📊 Retro | retro | ✅ | |
-| 🚀 Deploy | deploy | | ✅ |
-| 🌐 Bridge | bridge | | ✅ |
+**Action**: Parse $ARGUMENTS to get the mode name, then immediately
+invoke the matching skill using the Skill tool. Pass any remaining
+arguments through.
 
-On mode switch:
-1. Save current state to `docs/progress.md`
-2. Record transition in `.reins/mode-history.jsonl`
-3. Write new mode to `.reins/current-mode`
-4. Load the target mode's SKILL.md
-5. Announce the switch with mode icon and description
+## `/mode status`
 
-### `/mode status` — Current Status
+If the user says `/mode status`, do NOT invoke another skill. Instead:
+1. Read `docs/progress.md` if it exists — show progress summary
+2. Read `.reins/current-mode` if it exists — show current mode
+3. Summarize: current mode, tasks done/total, next task
 
-Show:
-- Current active mode (with icon)
-- Progress summary from `docs/progress.md`
-- Session elapsed time
-- Active pack (if any)
+## `/mode history`
 
-### `/mode history` — Transition History
+If the user says `/mode history`, read `.reins/mode-history.jsonl`
+and display recent transitions as a table.
 
-Show recent mode transitions from `.reins/mode-history.jsonl`:
+## Available Modes
 
-```
-Time       | From    → To      | Reason
-───────────┼─────────┼─────────┼──────────
-14:30:22   | plan    → dev     | Plan approved
-14:52:10   | dev     → review  | Phase 1 checkpoint
-15:01:45   | review  → dev     | Issues fixed
-```
-
-## Transition Rules
-
-Automatic transitions (suggested, not forced):
-- Plan approved → suggest Dev mode
-- Dev checkpoint → suggest Review mode
-- Review all-pass → suggest Dev mode (next phase) or completion
-- Dev all-complete → suggest Review mode (final)
+- 📋 **plan** — Requirements → task breakdown → acceptance criteria
+- 🔨 **dev** — Sequential implementation with auto-verification
+- 🔍 **review** — 7-layer verification, iterate until 0 issues
+- 💬 **discuss** — Multi-agent debate (3-4 agents, 3 rounds)
+- 🧹 **cleanup** — Entropy scan (7 categories) + auto-fix
+- 🔒 **security** — 6-layer security audit (manual only)
+- 📊 **retro** — Performance analysis across 5 categories
+- 🚀 **deploy** — Release pipeline (manual only)
+- 🌐 **bridge** — External AI integration (manual only)

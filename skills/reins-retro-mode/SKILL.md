@@ -4,7 +4,6 @@ description: >
   Use when the user says "회고", "retro", "retrospective",
   "성과 분석", "돌아보기", or invokes /mode retro.
   Also triggers at project milestones or sprint boundaries.
-mode: true
 version: "0.1.0"
 ---
 

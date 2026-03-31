@@ -8,15 +8,27 @@
 
 ## 핵심 원칙
 
-1. 모든 작업은 모드 안에서 수행한다
+1. 작업 시작 전 적절한 모드 스킬을 invoke하라
 2. 모드 전환 시 docs/progress.md에 상태를 기록한다
 3. 실패는 자동 학습된다 (.reins/learnings/)
 
-## 모드 (→ /mode \<name\>)
+## 스킬 라우팅
 
-plan · dev · review · discuss · cleanup · security · retro · deploy · bridge
+사용자가 모드 전환을 요청하면 Skill tool로 해당 스킬을 invoke한다:
 
-커스텀 모드: .reins/modes/*.yaml
+- "계획", "plan" → invoke `reins-plan-mode`
+- "개발", "구현", "dev" → invoke `reins-dev-mode`
+- "검토", "리뷰", "review" → invoke `reins-review-mode`
+- "토의", "토론", "discuss" → invoke `reins-discuss-mode`
+- "정리", "cleanup" → invoke `reins-cleanup-mode`
+- "보안", "security" → invoke `reins-security-mode` (사용자 명시적 호출만)
+- "회고", "retro" → invoke `reins-retro-mode`
+- "배포", "deploy" → invoke `reins-deploy-mode` (사용자 명시적 호출만)
+- "브릿지", "bridge" → invoke `reins-bridge-mode` (사용자 명시적 호출만)
+
+## 기본 흐름
+
+plan → dev → review → (이슈 있으면 dev 복귀) → deploy
 
 ## 팩
 

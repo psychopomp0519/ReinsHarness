@@ -4,7 +4,6 @@ description: >
   Use when the user says "개발 시작", "구현해줘",
   "build this", "implement", "코딩 시작", or invokes /mode dev.
   Also triggers after plan approval or when transitioning from plan mode.
-mode: true
 version: "0.1.0"
 ---
 
@@ -102,3 +101,9 @@ End every response (except simple 1-2 sentence replies) with:
 🔜 Next: <next task or action>
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
+
+## Handoff
+
+- When a Phase checkpoint is reached: suggest invoking `/review` or `/reins-review-mode`.
+- When all tasks are complete: suggest invoking `/review` for final verification.
+- When verification fails and you cannot auto-fix: suggest `/review`.
