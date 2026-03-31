@@ -5,7 +5,14 @@
 set -euo pipefail
 
 REINS_VERSION="0.1.0"
-REINS_HOME="$(cd "$(dirname "$0")/.." && pwd)"
+# Resolve symlinks to find the real REINS_HOME
+REINS_SELF="${BASH_SOURCE[0]}"
+while [[ -L "$REINS_SELF" ]]; do
+  REINS_LINK_DIR="$(cd "$(dirname "$REINS_SELF")" && pwd)"
+  REINS_SELF="$(readlink "$REINS_SELF")"
+  [[ "$REINS_SELF" != /* ]] && REINS_SELF="$REINS_LINK_DIR/$REINS_SELF"
+done
+REINS_HOME="$(cd "$(dirname "$REINS_SELF")/.." && pwd)"
 CLAUDE_DIR="${HOME}/.claude"
 REINS_CONFIG_DIR="${HOME}/.reins-config"
 
