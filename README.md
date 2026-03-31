@@ -46,6 +46,7 @@ npm install
 npm run build:all
 npm install -g @anthropic-ai/claude-code    # Claude Code 설치
 ln -sf ~/.reins/bin/reins ~/.local/bin/reins
+reins setup                                 # 스킬·에이전트·훅 등록
 ```
 
 ### 설치 확인
@@ -53,6 +54,8 @@ ln -sf ~/.reins/bin/reins ~/.local/bin/reins
 ```bash
 reins doctor
 ```
+
+`reins setup`을 실행하면 Claude Code에 스킬, 에이전트, 훅이 자동 등록됩니다.
 
 출력 예시:
 ```

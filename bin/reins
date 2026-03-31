@@ -6,6 +6,8 @@ set -euo pipefail
 
 REINS_VERSION="0.1.0"
 REINS_HOME="$(cd "$(dirname "$0")/.." && pwd)"
+CLAUDE_DIR="${HOME}/.claude"
+REINS_CONFIG_DIR="${HOME}/.reins-config"
 
 # ── Colors ──
 RED='\033[0;31m'
@@ -31,21 +33,20 @@ Usage:
   reins --mode <mode> [name]      Start with a specific mode
   reins --pack <pack> new <name>  Start with a pack loaded
 
+  reins setup                     Register skills, agents, hooks with Claude Code
   reins update                    Update Reins (core + packs)
   reins update --core             Update core only
-  reins update --packs            Update packs only
   reins update --check            Check for updates
   reins update --rollback         Rollback to previous version
 
   reins pack list                 List available packs
-  reins pack install <name>       Install a pack
+  reins pack install <name>       Install a pack (register its skills)
+  reins pack install --all        Install all packs
   reins pack remove <name>        Remove a pack
   reins pack create <name>        Create a new pack template
 
   reins merge <source>            Merge external source
   reins merge list                List merged sources
-  reins merge update              Update merged sources
-  reins merge remove <source>     Remove merged source
 
   reins config set <key> <value>  Set configuration
   reins config get <key>          Get configuration
@@ -58,9 +59,208 @@ Modes:
 EOF
 }
 
-# ── Version ──
 show_version() {
   echo "Reins v${REINS_VERSION}"
+}
+
+# ── Ensure dirs ──
+ensure_dirs() {
+  mkdir -p "$CLAUDE_DIR/skills" "$CLAUDE_DIR/agents" "$REINS_CONFIG_DIR"
+}
+
+# ── Skills/Agents registration ──
+register_skill() {
+  local skill_dir="$1"
+  local skill_name="$(basename "$skill_dir")"
+  local target="$CLAUDE_DIR/skills/$skill_name"
+  [[ -L "$target" ]] && rm "$target"
+  [[ -d "$target" ]] || true
+  ln -sf "$skill_dir" "$target"
+}
+
+register_all_builtin() {
+  ensure_dirs
+  local count=0
+
+  # Built-in skills
+  for skill_dir in "$REINS_HOME"/skills/*/; do
+    if [[ -f "${skill_dir}SKILL.md" ]]; then
+      register_skill "$skill_dir"
+      count=$((count + 1))
+    fi
+  done
+
+  # Built-in agents
+  for agent_file in "$REINS_HOME"/agents/*.md; do
+    if [[ -f "$agent_file" ]]; then
+      ln -sf "$agent_file" "$CLAUDE_DIR/agents/$(basename "$agent_file")"
+    fi
+  done
+
+  echo "$count"
+}
+
+register_pack_skills() {
+  local pack_name="$1"
+  local pack_dir="$REINS_HOME/packs/$pack_name"
+
+  if [[ ! -d "$pack_dir" ]]; then
+    echo -e "${RED}Pack not found:${NC} $pack_name"
+    return 1
+  fi
+
+  ensure_dirs
+  local count=0
+
+  # Pack skills (flat .md files → wrap in directory)
+  if [[ -d "${pack_dir}/skills" ]]; then
+    for skill_file in "${pack_dir}/skills/"*.md; do
+      if [[ -f "$skill_file" ]]; then
+        local sname="$(basename "$skill_file" .md)"
+        local target_dir="$CLAUDE_DIR/skills/$sname"
+        mkdir -p "$target_dir"
+        ln -sf "$skill_file" "$target_dir/SKILL.md"
+        count=$((count + 1))
+      fi
+    done
+    # Pack skills (subdirectory with SKILL.md)
+    for skill_subdir in "${pack_dir}/skills/"*/; do
+      if [[ -f "${skill_subdir}SKILL.md" ]]; then
+        register_skill "$skill_subdir"
+        count=$((count + 1))
+      fi
+    done
+  fi
+
+  # Pack agents
+  if [[ -d "${pack_dir}/agents" ]]; then
+    for agent_file in "${pack_dir}/agents/"*.md; do
+      if [[ -f "$agent_file" ]]; then
+        ln -sf "$agent_file" "$CLAUDE_DIR/agents/$(basename "$agent_file")"
+      fi
+    done
+  fi
+
+  echo "$count"
+}
+
+unregister_pack_skills() {
+  local pack_name="$1"
+  local pack_dir="$REINS_HOME/packs/$pack_name"
+
+  if [[ ! -d "$pack_dir" ]]; then
+    echo -e "${RED}Pack not found:${NC} $pack_name"
+    return 1
+  fi
+
+  local count=0
+
+  if [[ -d "${pack_dir}/skills" ]]; then
+    for skill_file in "${pack_dir}/skills/"*.md; do
+      if [[ -f "$skill_file" ]]; then
+        local sname="$(basename "$skill_file" .md)"
+        rm -rf "$CLAUDE_DIR/skills/$sname"
+        count=$((count + 1))
+      fi
+    done
+    for skill_subdir in "${pack_dir}/skills/"*/; do
+      if [[ -d "$skill_subdir" ]]; then
+        local sname="$(basename "$skill_subdir")"
+        rm -rf "$CLAUDE_DIR/skills/$sname"
+        count=$((count + 1))
+      fi
+    done
+  fi
+
+  if [[ -d "${pack_dir}/agents" ]]; then
+    for agent_file in "${pack_dir}/agents/"*.md; do
+      if [[ -f "$agent_file" ]]; then
+        rm -f "$CLAUDE_DIR/agents/$(basename "$agent_file")"
+      fi
+    done
+  fi
+
+  echo "$count"
+}
+
+# ── Hooks injection ──
+inject_hooks() {
+  local settings_file="$CLAUDE_DIR/settings.json"
+  ensure_dirs
+
+  if ! command -v jq &>/dev/null; then
+    echo -e "${YELLOW}jq not found — cannot inject hooks${NC}"
+    return 1
+  fi
+
+  local tmp
+  tmp="$(mktemp)"
+
+  if [[ -f "$settings_file" ]]; then
+    jq --arg rh "$REINS_HOME" '
+      .hooks = {
+        "PostToolUse": [
+          {
+            "matcher": "Write|Edit|MultiEdit",
+            "hooks": [
+              { "type": "command", "command": ("node " + $rh + "/hooks/dist/auto-format.js") },
+              { "type": "command", "command": ("node " + $rh + "/hooks/dist/auto-checkpoint.js") }
+            ]
+          },
+          {
+            "matcher": "",
+            "hooks": [
+              { "type": "command", "command": ("node " + $rh + "/hooks/dist/context-compact.js") }
+            ]
+          }
+        ],
+        "PreToolUse": [
+          {
+            "matcher": "Read",
+            "hooks": [
+              { "type": "command", "command": ("node " + $rh + "/hooks/dist/security-guard.js") }
+            ]
+          }
+        ],
+        "Stop": [
+          {
+            "matcher": "",
+            "hooks": [
+              { "type": "command", "command": ("node " + $rh + "/hooks/dist/learning-observer.js") }
+            ]
+          }
+        ]
+      } |
+      .env.REINS_HOME = $rh
+    ' "$settings_file" > "$tmp" && mv "$tmp" "$settings_file"
+  else
+    cat > "$settings_file" <<SETTINGS
+{
+  "env": { "REINS_HOME": "$REINS_HOME" },
+  "hooks": {
+    "PostToolUse": [
+      { "matcher": "Write|Edit|MultiEdit", "hooks": [
+        { "type": "command", "command": "node $REINS_HOME/hooks/dist/auto-format.js" },
+        { "type": "command", "command": "node $REINS_HOME/hooks/dist/auto-checkpoint.js" }
+      ]},
+      { "matcher": "", "hooks": [
+        { "type": "command", "command": "node $REINS_HOME/hooks/dist/context-compact.js" }
+      ]}
+    ],
+    "PreToolUse": [
+      { "matcher": "Read", "hooks": [
+        { "type": "command", "command": "node $REINS_HOME/hooks/dist/security-guard.js" }
+      ]}
+    ],
+    "Stop": [
+      { "matcher": "", "hooks": [
+        { "type": "command", "command": "node $REINS_HOME/hooks/dist/learning-observer.js" }
+      ]}
+    ]
+  }
+}
+SETTINGS
+  fi
 }
 
 # ── Session helpers ──
@@ -70,29 +270,26 @@ session_exists() {
 }
 
 build_claude_flags() {
-  local flags=""
   if [[ "${SAFE_MODE:-false}" == "true" ]]; then
-    flags="--enable-auto-mode"
+    echo "--enable-auto-mode"
   else
-    flags="--dangerously-skip-permissions --enable-auto-mode"
+    echo "--dangerously-skip-permissions --enable-auto-mode"
   fi
-  echo "$flags"
 }
 
 start_new_session() {
   local name="${1:-}"
   local flags
   flags="$(build_claude_flags)"
-  local mode_flag="${START_MODE:+--mode $START_MODE}"
 
   if [[ -n "$name" ]]; then
     echo -e "${GREEN}Starting new Reins session:${NC} ${BOLD}$name${NC}"
     # shellcheck disable=SC2086
-    claude -n "$name" $flags $mode_flag
+    claude -n "$name" $flags
   else
     echo -e "${GREEN}Starting new Reins session${NC}"
     # shellcheck disable=SC2086
-    claude $flags $mode_flag
+    claude $flags
   fi
 }
 
@@ -107,6 +304,37 @@ resume_session() {
 }
 
 # ── Subcommands ──
+cmd_setup() {
+  echo -e "${CYAN}${BOLD}Reins Setup${NC}"
+  echo ""
+
+  # 1. Register skills
+  echo -e "${BLUE}Registering skills...${NC}"
+  local skill_count
+  skill_count="$(register_all_builtin)"
+  echo -e "  ${GREEN}✓ ${skill_count} built-in skills registered${NC}"
+
+  # 2. Register all pack skills
+  local pack_skill_total=0
+  for pack_dir in "$REINS_HOME"/packs/*/; do
+    if [[ -f "${pack_dir}PACK.yaml" ]]; then
+      local pname="$(basename "$pack_dir")"
+      local pcount
+      pcount="$(register_pack_skills "$pname")"
+      pack_skill_total=$((pack_skill_total + pcount))
+    fi
+  done
+  echo -e "  ${GREEN}✓ ${pack_skill_total} pack skills registered${NC}"
+
+  # 3. Inject hooks
+  echo -e "${BLUE}Injecting hooks into settings.json...${NC}"
+  inject_hooks
+  echo -e "  ${GREEN}✓ Hooks configured${NC}"
+
+  echo ""
+  echo -e "${GREEN}${BOLD}Setup complete!${NC} Start a session with: ${CYAN}reins new my-project${NC}"
+}
+
 cmd_new() {
   local name="${1:?Session name required: reins new <name>}"
   start_new_session "$name"
@@ -120,7 +348,9 @@ cmd_list() {
 cmd_fork() {
   local name="${1:?Fork name required: reins fork <name>}"
   echo -e "${YELLOW}Forking session as:${NC} ${BOLD}$name${NC}"
-  echo "Session forking is not yet implemented."
+  local branch="reins-fork/${name}"
+  git checkout -b "$branch" 2>/dev/null && echo -e "${GREEN}Created branch:${NC} $branch"
+  start_new_session "$name"
 }
 
 cmd_update() {
@@ -129,22 +359,37 @@ cmd_update() {
     --core)
       echo -e "${BLUE}Updating Reins core...${NC}"
       cd "$REINS_HOME" && git pull && npm install && npm run build:all
-      ;;
-    --packs)
-      echo -e "${BLUE}Updating packs...${NC}"
-      echo "Pack updates not yet implemented."
+      bash "$REINS_HOME/scripts/register-skills.sh"
       ;;
     --check)
       echo -e "${BLUE}Checking for updates...${NC}"
-      cd "$REINS_HOME" && git fetch && git log HEAD..origin/main --oneline
+      cd "$REINS_HOME" && git fetch
+      local changes
+      changes="$(git log HEAD..origin/main --oneline 2>/dev/null)"
+      if [[ -n "$changes" ]]; then
+        echo -e "${YELLOW}Updates available:${NC}"
+        echo "$changes"
+      else
+        echo -e "${GREEN}Already up to date.${NC}"
+      fi
       ;;
     --rollback)
       echo -e "${YELLOW}Rolling back to previous version...${NC}"
-      echo "Rollback not yet implemented."
+      cd "$REINS_HOME"
+      local prev
+      prev="$(git rev-parse HEAD~1 2>/dev/null)"
+      if [[ -n "$prev" ]]; then
+        git checkout "$prev" -- .
+        npm install && npm run build:all
+        echo -e "${GREEN}Rolled back to:${NC} $prev"
+      else
+        echo -e "${RED}No previous version to rollback to.${NC}"
+      fi
       ;;
     *)
       echo -e "${BLUE}Updating Reins (core + packs)...${NC}"
       cd "$REINS_HOME" && git pull && npm install && npm run build:all
+      cmd_setup
       ;;
   esac
 }
@@ -155,57 +400,134 @@ cmd_pack() {
   case "$action" in
     list)
       echo -e "${CYAN}Available packs:${NC}"
-      ls -1 "$REINS_HOME/packs/" 2>/dev/null | while read -r pack; do
-        if [[ -d "$REINS_HOME/packs/$pack" && "$pack" != "." ]]; then
-          echo "  - $pack"
+      for pack_dir in "$REINS_HOME"/packs/*/; do
+        if [[ -f "${pack_dir}PACK.yaml" ]]; then
+          local pname="$(basename "$pack_dir")"
+          # Check if installed (has symlinks in ~/.claude/skills/)
+          local installed=""
+          if ls "$CLAUDE_DIR/skills/" 2>/dev/null | grep -q "$pname" 2>/dev/null; then
+            installed="${GREEN}✅${NC}"
+          else
+            installed="⬜"
+          fi
+          local desc=""
+          desc="$(grep '^description:' "${pack_dir}PACK.yaml" 2>/dev/null | head -1 | sed 's/^description:\s*["]*//;s/["]*$//' | cut -c1-60)"
+          echo -e "  ${installed} ${BOLD}${pname}${NC} — ${desc}"
         fi
       done
       ;;
     install)
-      local name="${1:?Pack name required: reins pack install <name>}"
-      echo -e "${GREEN}Installing pack:${NC} $name"
-      echo "Pack installation not yet fully implemented."
+      if [[ "${1:-}" == "--all" ]]; then
+        echo -e "${GREEN}Installing all packs...${NC}"
+        local total=0
+        for pack_dir in "$REINS_HOME"/packs/*/; do
+          if [[ -f "${pack_dir}PACK.yaml" ]]; then
+            local pname="$(basename "$pack_dir")"
+            local pcount
+            pcount="$(register_pack_skills "$pname")"
+            echo -e "  ${GREEN}✓${NC} $pname (${pcount} skills)"
+            total=$((total + pcount))
+          fi
+        done
+        echo -e "${GREEN}${BOLD}All packs installed:${NC} ${total} skills registered"
+      else
+        local name="${1:?Pack name required: reins pack install <name>}"
+        if [[ ! -d "$REINS_HOME/packs/$name" ]]; then
+          echo -e "${RED}Pack not found:${NC} $name"
+          echo "Run 'reins pack list' to see available packs."
+          exit 1
+        fi
+        echo -e "${GREEN}Installing pack:${NC} ${BOLD}$name${NC}"
+        local count
+        count="$(register_pack_skills "$name")"
+        echo -e "${GREEN}✓ Installed:${NC} ${count} skills registered from ${name}"
+      fi
       ;;
     remove)
       local name="${1:?Pack name required: reins pack remove <name>}"
-      echo -e "${RED}Removing pack:${NC} $name"
-      echo "Pack removal not yet implemented."
+      echo -e "${RED}Removing pack:${NC} ${BOLD}$name${NC}"
+      local count
+      count="$(unregister_pack_skills "$name")"
+      echo -e "${GREEN}✓ Removed:${NC} ${count} skills unregistered"
       ;;
     create)
       local name="${1:?Pack name required: reins pack create <name>}"
-      echo -e "${GREEN}Creating pack template:${NC} $name"
+      echo -e "${GREEN}Creating pack template:${NC} ${BOLD}$name${NC}"
       mkdir -p "$REINS_HOME/packs/$name"/{skills,agents}
-      echo "Pack template created at packs/$name/"
+      cat > "$REINS_HOME/packs/$name/PACK.yaml" <<PACKYAML
+name: $name
+version: "1.0.0"
+description: "Description of $name pack"
+author: ""
+keywords: []
+dependencies: []
+skills: []
+agents: []
+PACKYAML
+      echo -e "${GREEN}✓ Pack template created at:${NC} packs/$name/"
       ;;
     *)
       echo -e "${RED}Unknown pack action:${NC} $action"
+      echo "Available: list, install, remove, create"
       exit 1
       ;;
   esac
 }
 
 cmd_merge() {
-  local action="${1:?Source or action required: reins merge <source|list|update|remove>}"
+  local action="${1:?Source or action required: reins merge <source|list>}"
   shift
+  local registry="$REINS_HOME/.reins/merged/registry.json"
+  mkdir -p "$(dirname "$registry")"
+  [[ -f "$registry" ]] || echo '[]' > "$registry"
+
   case "$action" in
-    list)   echo "Merged sources:" && cat "$REINS_HOME/.reins/merged/registry.json" 2>/dev/null || echo "  (none)" ;;
-    update) echo "Updating merged sources..." && echo "Not yet implemented." ;;
-    remove) echo "Removing merged source: ${1:-?}" && echo "Not yet implemented." ;;
-    *)      echo "Merging source: $action" && echo "Not yet implemented." ;;
+    list)
+      echo -e "${CYAN}Merged sources:${NC}"
+      if [[ "$(cat "$registry")" == "[]" ]]; then
+        echo "  (none)"
+      else
+        jq -r '.[] | "  - \(.name) [\(.level)] — \(.source)"' "$registry" 2>/dev/null || echo "  (none)"
+      fi
+      ;;
+    *)
+      # Treat as a source path/URL
+      echo -e "${BLUE}Analyzing source:${NC} $action"
+      if [[ -d "$action" ]]; then
+        echo -e "${GREEN}Source is a local directory${NC}"
+        echo "  Skills found: $(find "$action" -name 'SKILL.md' 2>/dev/null | wc -l)"
+        echo "  Agents found: $(find "$action" -name '*.md' -path '*/agents/*' 2>/dev/null | wc -l)"
+        echo ""
+        echo "Use: reins merge --level coexist|wrap|convert"
+      else
+        echo -e "${YELLOW}Remote source — clone first, then merge${NC}"
+        echo "  git clone $action /tmp/reins-merge-source"
+        echo "  reins merge /tmp/reins-merge-source"
+      fi
+      ;;
   esac
 }
 
 cmd_config() {
   local action="${1:?Action required: reins config <set|get>}"
   shift
+  local config_file="$REINS_CONFIG_DIR/config.json"
+  mkdir -p "$REINS_CONFIG_DIR"
+  [[ -f "$config_file" ]] || echo '{}' > "$config_file"
+
   case "$action" in
     set)
       local key="${1:?Key required}" value="${2:?Value required}"
-      echo "Config set: $key = $value (not yet implemented)"
+      local tmp
+      tmp="$(mktemp)"
+      jq --arg k "$key" --arg v "$value" '.[$k] = $v' "$config_file" > "$tmp" && mv "$tmp" "$config_file"
+      echo -e "${GREEN}✓${NC} $key = $value"
       ;;
     get)
       local key="${1:?Key required}"
-      echo "Config get: $key (not yet implemented)"
+      local val
+      val="$(jq -r --arg k "$key" '.[$k] // "not set"' "$config_file")"
+      echo "$key = $val"
       ;;
     *)
       echo -e "${RED}Unknown config action:${NC} $action"
@@ -259,6 +581,22 @@ cmd_doctor() {
     echo -e "  Hooks:       ${YELLOW}not built (run: npm run build:hooks)${NC}"
   fi
 
+  # Skills registration
+  local skill_count
+  skill_count=$(find "$CLAUDE_DIR/skills/" -maxdepth 1 -type l 2>/dev/null | wc -l)
+  if [[ "$skill_count" -gt 0 ]]; then
+    echo -e "  Skills:      ${GREEN}${skill_count} registered${NC}"
+  else
+    echo -e "  Skills:      ${YELLOW}not registered (run: reins setup)${NC}"
+  fi
+
+  # Hooks in settings.json
+  if [[ -f "$CLAUDE_DIR/settings.json" ]] && grep -q "hooks" "$CLAUDE_DIR/settings.json" 2>/dev/null; then
+    echo -e "  Settings:    ${GREEN}hooks configured${NC}"
+  else
+    echo -e "  Settings:    ${YELLOW}hooks not configured (run: reins setup)${NC}"
+  fi
+
   echo "────────────────────────────────"
 }
 
@@ -268,13 +606,11 @@ START_MODE=""
 START_PACK=""
 
 main() {
-  # No arguments → new anonymous session
   if [[ $# -eq 0 ]]; then
     start_new_session
     exit 0
   fi
 
-  # Parse flags and subcommands
   case "$1" in
     --help|-h)
       show_help
@@ -287,11 +623,7 @@ main() {
     --safe)
       SAFE_MODE="true"
       shift
-      if [[ $# -gt 0 ]]; then
-        start_new_session "$1"
-      else
-        start_new_session
-      fi
+      start_new_session "${1:-}"
       exit 0
       ;;
     --mode)
@@ -300,16 +632,16 @@ main() {
       if [[ $# -gt 0 && "$1" == "new" ]]; then
         shift
         start_new_session "${1:-}"
-      elif [[ $# -gt 0 ]]; then
-        start_new_session "$1"
       else
-        start_new_session
+        start_new_session "${1:-}"
       fi
       exit 0
       ;;
     --pack)
       START_PACK="${2:?Pack name required: reins --pack <pack>}"
       shift 2
+      # Install the pack first
+      register_pack_skills "$START_PACK" > /dev/null 2>&1
       if [[ $# -gt 0 && "$1" == "new" ]]; then
         shift
         start_new_session "${1:-}"
@@ -317,6 +649,9 @@ main() {
         start_new_session "${1:-}"
       fi
       exit 0
+      ;;
+    setup)
+      cmd_setup
       ;;
     new)
       shift
@@ -349,7 +684,6 @@ main() {
       cmd_doctor
       ;;
     *)
-      # Argument is a session name → resume or start
       local session_name="$1"
       if session_exists "$session_name"; then
         resume_session "$session_name"
