@@ -1,7 +1,6 @@
 ---
 name: reins-merge
 description: >
-  Merges external Claude Code plugins and harnesses into Reins.
   Use when the user says "병합", "merge", "/reins merge",
   or wants to integrate an external plugin or harness.
 version: "0.1.0"

@@ -1,9 +1,7 @@
 ---
 name: reins-convert-plan
 description: >
-  Converts external plan documents (PRD, specs, requirements)
-  into Reins plan format with task breakdowns, acceptance criteria,
-  and dependency graphs. Use when the user uploads a planning document,
+  Use when the user uploads a planning document,
   says "이 계획서 변환해줘", "convert this plan", "PRD를 Reins 형식으로",
   or provides a requirements file to be restructured.
 version: "0.1.0"

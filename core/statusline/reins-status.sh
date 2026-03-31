@@ -4,26 +4,34 @@
 # ─────────────────────────────────────────────────────────
 # Input: JSON from stdin (Claude Code statusLine protocol)
 # Output: Formatted status string to stdout
+#
+# Ref: ccstatusline (sirmalloc/ccstatusline) StatusJSON schema
+# Fields: session_id, model, context_window{}, cost{}, rate_limits{}, workspace{}
 
 set -euo pipefail
 
 # Read JSON input from stdin
 INPUT="$(cat)"
 
-# ── Extract fields from Claude Code statusLine JSON ──
-# Available fields: session_id, model, context_used, context_total, cost, duration
-CONTEXT_USED=$(echo "$INPUT" | jq -r '.context_used // 0')
-CONTEXT_TOTAL=$(echo "$INPUT" | jq -r '.context_total // 1')
-COST=$(echo "$INPUT" | jq -r '.cost // "0.00"')
-DURATION_S=$(echo "$INPUT" | jq -r '.duration // 0')
+# ── Extract fields using actual Claude Code statusLine JSON schema ──
+# context_window: { context_window_size, total_input_tokens, total_output_tokens,
+#                   current_usage, used_percentage, remaining_percentage }
+CTX_PCT=$(echo "$INPUT" | jq -r '.context_window.used_percentage // 0' | cut -d. -f1)
+
+# cost: { total_cost_usd, total_duration_ms, total_api_duration_ms,
+#          total_lines_added, total_lines_removed }
+COST=$(echo "$INPUT" | jq -r '.cost.total_cost_usd // 0' | xargs printf "%.2f")
+DURATION_MS=$(echo "$INPUT" | jq -r '.cost.total_duration_ms // 0')
+DURATION_S=$((DURATION_MS / 1000))
+
+# model: string or { id, display_name }
+MODEL=$(echo "$INPUT" | jq -r 'if .model | type == "object" then .model.display_name // .model.id else .model // "unknown" end')
+
+# rate_limits: { five_hour: { used_percentage, resets_at }, seven_day: { used_percentage, resets_at } }
+RATE_5H=$(echo "$INPUT" | jq -r '.rate_limits.five_hour.used_percentage // empty' 2>/dev/null || echo "")
+RATE_7D=$(echo "$INPUT" | jq -r '.rate_limits.seven_day.used_percentage // empty' 2>/dev/null || echo "")
 
 # ── Context percentage + color ──
-if [[ "$CONTEXT_TOTAL" -gt 0 ]]; then
-  CTX_PCT=$((CONTEXT_USED * 100 / CONTEXT_TOTAL))
-else
-  CTX_PCT=0
-fi
-
 if [[ $CTX_PCT -lt 50 ]]; then
   CTX_ICON="🟢"
 elif [[ $CTX_PCT -lt 80 ]]; then
@@ -42,7 +50,6 @@ else
 fi
 
 # ── Mode detection ──
-# Read current mode from .reins/current-mode if it exists
 MODE_FILE=".reins/current-mode"
 if [[ -f "$MODE_FILE" ]]; then
   CURRENT_MODE=$(cat "$MODE_FILE" 2>/dev/null || echo "none")
@@ -50,7 +57,6 @@ else
   CURRENT_MODE="none"
 fi
 
-# Mode icon mapping
 case "$CURRENT_MODE" in
   plan)     MODE_ICON="📋" ;;
   dev)      MODE_ICON="🔨" ;;
@@ -72,7 +78,6 @@ if [[ -f "$PROGRESS_FILE" ]]; then
   DONE=$(grep -c '^\- \[x\]' "$PROGRESS_FILE" 2>/dev/null || echo "0")
   if [[ "$TOTAL" -gt 0 ]]; then
     PCT=$((DONE * 100 / TOTAL))
-    # Build progress bar (10 segments)
     FILLED=$((PCT / 10))
     EMPTY=$((10 - FILLED))
     BAR=""
@@ -105,6 +110,14 @@ fi
 OUTPUT+=" | ${CTX_ICON} ${CTX_PCT}% ctx"
 OUTPUT+=" | 💰 \$${COST}"
 OUTPUT+=" | ⏱ ${DURATION}"
+
+# Rate limit warning (show if >70%)
+if [[ -n "$RATE_5H" ]]; then
+  RATE_5H_INT=$(echo "$RATE_5H" | cut -d. -f1)
+  if [[ "$RATE_5H_INT" -ge 70 ]]; then
+    OUTPUT+=" | ⚠️ rate ${RATE_5H_INT}%"
+  fi
+fi
 
 if [[ -n "$BRANCH" ]]; then
   OUTPUT+=" | 🔀 ${BRANCH}"

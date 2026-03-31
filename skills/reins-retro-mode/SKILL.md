@@ -1,8 +1,6 @@
 ---
 name: reins-retro-mode
 description: >
-  Analyzes session and project performance across 5 categories:
-  productivity, quality, efficiency, learning, and security.
   Use when the user says "회고", "retro", "retrospective",
   "성과 분석", "돌아보기", or invokes /mode retro.
   Also triggers at project milestones or sprint boundaries.

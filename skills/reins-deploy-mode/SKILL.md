@@ -1,8 +1,6 @@
 ---
 name: reins-deploy-mode
 description: >
-  Manages deployment pipelines with preview, staging, production stages,
-  canary releases, and rollback capabilities.
   Use when the user invokes /mode deploy or says "배포", "deploy",
   "릴리스", "release". This mode requires explicit invocation.
 mode: true

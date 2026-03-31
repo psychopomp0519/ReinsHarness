@@ -1,7 +1,6 @@
 ---
 name: reins-perf
 description: >
-  Profiles and benchmarks project performance.
   Use when the user says "성능", "performance", "perf",
   "/perf profile", or wants to analyze performance.
 version: "0.1.0"

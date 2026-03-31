@@ -1,8 +1,7 @@
 ---
 name: reins-review-mode
 description: >
-  Performs multi-layer code verification with iterative fixing
-  until zero issues remain. Use when the user says "검토해줘",
+  Use when the user says "검토해줘",
   "리뷰", "review", "check quality", or invokes /mode review.
   Also triggers automatically at plan checkpoints or after
   dev mode task failures.

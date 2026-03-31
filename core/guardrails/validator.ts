@@ -2,27 +2,30 @@
  * Reins Guardrails — Validator Engine
  *
  * Runs guardrail rules and produces validation reports.
+ * Uses first-match-wins evaluation from claude-code-harness pattern.
  */
 
 import {
   BUILTIN_RULES,
+  evaluateRules,
   checkRules,
   type GuardrailRule,
   type RuleContext,
-  type RuleResult,
+  type HookResult,
+  type RuleDecision,
   type RuleSeverity,
 } from "./rules.js";
 
 export interface ValidationReport {
   timestamp: string;
   context: Partial<RuleContext>;
+  decision: RuleDecision;
   results: ValidationEntry[];
   summary: {
     total: number;
-    passed: number;
-    errors: number;
-    warnings: number;
-    infos: number;
+    approved: number;
+    denied: number;
+    asked: number;
   };
 }
 
@@ -30,11 +33,22 @@ export interface ValidationEntry {
   ruleId: string;
   ruleName: string;
   severity: RuleSeverity;
-  result: RuleResult;
+  result: HookResult;
 }
 
 /**
- * Validate a context against all rules.
+ * Quick check — first-match-wins, returns single decision.
+ */
+export function quickCheck(
+  context: RuleContext,
+  customRules?: GuardrailRule[],
+): HookResult {
+  const allRules = [...BUILTIN_RULES, ...(customRules || [])];
+  return evaluateRules(context, allRules);
+}
+
+/**
+ * Full validation — runs all rules and produces a report.
  */
 export function validate(
   context: RuleContext,
@@ -45,10 +59,9 @@ export function validate(
   const results = checkRules(allRules, context);
 
   const entries: ValidationEntry[] = [];
-  let passed = 0;
-  let errors = 0;
-  let warnings = 0;
-  let infos = 0;
+  let approved = 0;
+  let denied = 0;
+  let asked = 0;
 
   for (const [ruleId, result] of results) {
     const rule = ruleMap.get(ruleId)!;
@@ -59,27 +72,28 @@ export function validate(
       result,
     });
 
-    if (result.passed) {
-      passed++;
-    } else {
-      switch (rule.severity) {
-        case "error": errors++; break;
-        case "warning": warnings++; break;
-        case "info": infos++; break;
-      }
+    switch (result.decision) {
+      case "approve": approved++; break;
+      case "deny": denied++; break;
+      case "ask": asked++; break;
     }
   }
 
+  // Overall decision: deny > ask > approve
+  let decision: RuleDecision = "approve";
+  if (denied > 0) decision = "deny";
+  else if (asked > 0) decision = "ask";
+
   return {
     timestamp: new Date().toISOString(),
-    context: { filePath: context.filePath, mode: context.mode },
+    context: { filePath: context.filePath, mode: context.mode, toolName: context.toolName },
+    decision,
     results: entries,
     summary: {
       total: entries.length,
-      passed,
-      errors,
-      warnings,
-      infos,
+      approved,
+      denied,
+      asked,
     },
   };
 }

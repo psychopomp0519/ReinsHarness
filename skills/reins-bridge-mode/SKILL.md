@@ -1,8 +1,6 @@
 ---
 name: reins-bridge-mode
 description: >
-  Integrates external AI models (Gemini, GPT) for cross-review,
-  second opinions, comparative analysis, and task handoff.
   Use when the user invokes /mode bridge or says "브릿지",
   "bridge", "다른 AI", "크로스 리뷰", "세컨드 오피니언".
   This mode requires explicit invocation.

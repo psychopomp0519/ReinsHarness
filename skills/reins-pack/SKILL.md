@@ -1,7 +1,6 @@
 ---
 name: reins-pack
 description: >
-  Manages domain packs — install, remove, list, search, and create.
   Use when the user says "팩 설치", "pack install", "팩 목록",
   "/pack list", "/pack install <name>", or needs to manage
   domain-specific functionality extensions.

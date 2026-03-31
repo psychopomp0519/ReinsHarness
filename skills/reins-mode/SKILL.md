@@ -1,8 +1,6 @@
 ---
 name: reins-mode
 description: >
-  Switches between Reins modes, shows current mode status,
-  and displays mode transition history.
   Use when the user says "모드 전환", "switch mode",
   "/mode plan", "/mode dev", "/mode review", "/mode status",
   "/mode history", or any "/mode <name>" command.

@@ -1,8 +1,7 @@
 ---
 name: reins-learn
 description: >
-  Manages the automatic learning system — view learned patterns,
-  promote rules, reset learnings. Use when the user says "학습",
+  Use when the user says "학습",
   "/learn", "what did you learn", or wants to manage
   the .reins/learnings/ data.
 version: "0.1.0"

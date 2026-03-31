@@ -1,8 +1,6 @@
 ---
 name: reins-cleanup-mode
 description: >
-  Scans codebase for entropy (dead code, duplications, naming violations,
-  doc drift, coverage gaps) and performs automated fixes.
   Use when the user says "정리", "cleanup", "clean up",
   "코드 정리", "리팩토링", or invokes /mode cleanup.
   Also triggers when code quality metrics degrade or after

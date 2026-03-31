@@ -1,9 +1,12 @@
 /**
  * Reins Guardrails — Declarative rule definitions
  *
- * Rules that can be checked programmatically against code/behavior.
+ * Pattern: claude-code-harness declarative rule table with
+ * toolPattern regex matching + first-match-wins evaluation.
+ * Ref: Chachamaru127/claude-code-harness/core/src/guardrails/rules.ts
  */
 
+export type RuleDecision = "approve" | "deny" | "ask";
 export type RuleSeverity = "error" | "warning" | "info";
 
 export interface GuardrailRule {
@@ -11,110 +14,219 @@ export interface GuardrailRule {
   name: string;
   description: string;
   severity: RuleSeverity;
-  check: (context: RuleContext) => RuleResult;
+  toolPattern: RegExp;
+  evaluate: (context: RuleContext) => HookResult | null;
 }
 
 export interface RuleContext {
+  input: string;
   filePath?: string;
   content?: string;
   mode?: string;
   toolName?: string;
   toolInput?: Record<string, unknown>;
+  projectRoot?: string;
 }
 
-export interface RuleResult {
-  passed: boolean;
+export interface HookResult {
+  decision: RuleDecision;
   message: string;
   details?: string;
 }
 
 /**
  * Built-in guardrail rules.
+ * Evaluated sequentially — first match wins.
  */
 export const BUILTIN_RULES: GuardrailRule[] = [
+  // R01: Block sudo commands
   {
-    id: "no-secrets-in-code",
-    name: "No Secrets in Code",
-    description: "Detect hardcoded secrets, API keys, and passwords",
+    id: "R01-no-sudo",
+    name: "No Sudo",
+    description: "Block sudo and su commands",
     severity: "error",
-    check: (ctx) => {
-      if (!ctx.content) return { passed: true, message: "No content to check" };
+    toolPattern: /^Bash$/,
+    evaluate: (ctx) => {
+      if (!ctx.input) return null;
+      if (/\bsudo\b|\bsu\s+-/.test(ctx.input)) {
+        return { decision: "deny", message: "sudo/su commands are blocked" };
+      }
+      return null;
+    },
+  },
+
+  // R02: Block force push
+  {
+    id: "R02-no-force-push",
+    name: "No Force Push",
+    description: "Block git push --force on protected branches",
+    severity: "error",
+    toolPattern: /^Bash$/,
+    evaluate: (ctx) => {
+      if (!ctx.input) return null;
+      if (/git\s+push\s+.*--force/.test(ctx.input)) {
+        return { decision: "deny", message: "Force push is blocked. Use --force-with-lease if needed." };
+      }
+      return null;
+    },
+  },
+
+  // R03: Block git reset --hard on main/master
+  {
+    id: "R03-no-reset-hard",
+    name: "No Reset Hard on Protected",
+    description: "Block git reset --hard on main/master branches",
+    severity: "error",
+    toolPattern: /^Bash$/,
+    evaluate: (ctx) => {
+      if (!ctx.input) return null;
+      if (/git\s+reset\s+--hard/.test(ctx.input)) {
+        return { decision: "ask", message: "git reset --hard detected. Confirm this is intentional." };
+      }
+      return null;
+    },
+  },
+
+  // R04: Warn on secret file reads
+  {
+    id: "R04-secret-file-read",
+    name: "Secret File Read Warning",
+    description: "Warn when reading files that may contain secrets",
+    severity: "warning",
+    toolPattern: /^Read$/,
+    evaluate: (ctx) => {
+      if (!ctx.filePath) return null;
+      if (/\.(env|pem|key|p12|pfx)$|\.ssh\/|credentials\.json|secrets?\.(json|yaml)/.test(ctx.filePath)) {
+        return { decision: "deny", message: `Blocked read of sensitive file: ${ctx.filePath}` };
+      }
+      return null;
+    },
+  },
+
+  // R05: Ask confirmation for rm -rf
+  {
+    id: "R05-confirm-rm-rf",
+    name: "Confirm rm -rf",
+    description: "Ask confirmation before recursive forced deletion",
+    severity: "error",
+    toolPattern: /^Bash$/,
+    evaluate: (ctx) => {
+      if (!ctx.input) return null;
+      if (/rm\s+(-rf|-fr)\s/.test(ctx.input)) {
+        return { decision: "ask", message: "rm -rf detected. Confirm deletion target is correct." };
+      }
+      return null;
+    },
+  },
+
+  // R06: Block --no-verify flag
+  {
+    id: "R06-no-skip-hooks",
+    name: "No Skip Hooks",
+    description: "Block git commit --no-verify to prevent hook bypass",
+    severity: "warning",
+    toolPattern: /^Bash$/,
+    evaluate: (ctx) => {
+      if (!ctx.input) return null;
+      if (/--no-verify/.test(ctx.input)) {
+        return { decision: "deny", message: "--no-verify is not allowed. Fix the hook issue instead." };
+      }
+      return null;
+    },
+  },
+
+  // R07: Detect hardcoded secrets in written content
+  {
+    id: "R07-no-secrets-in-code",
+    name: "No Secrets in Code",
+    description: "Detect hardcoded secrets, API keys, and passwords in file writes",
+    severity: "error",
+    toolPattern: /^(Write|Edit|MultiEdit)$/,
+    evaluate: (ctx) => {
+      if (!ctx.content) return null;
 
       const patterns = [
         /(?:password|passwd|pwd)\s*[:=]\s*["'][^"']{4,}/gi,
         /(?:api_?key|apikey|secret_?key)\s*[:=]\s*["'][^"']{8,}/gi,
-        /(?:token)\s*[:=]\s*["'][A-Za-z0-9_\-.]{20,}/gi,
         /-----BEGIN (?:RSA |EC )?PRIVATE KEY-----/g,
-        /(?:AKIA|ASIA)[A-Z0-9]{16}/g, // AWS access key
+        /(?:AKIA|ASIA)[A-Z0-9]{16}/g,
       ];
 
       for (const pattern of patterns) {
         if (pattern.test(ctx.content)) {
           return {
-            passed: false,
+            decision: "ask",
             message: `Potential secret detected in ${ctx.filePath || "content"}`,
-            details: `Pattern matched: ${pattern.source}`,
+            details: `Pattern: ${pattern.source}`,
           };
         }
       }
-
-      return { passed: true, message: "No secrets detected" };
+      return null;
     },
   },
+
+  // R08: Warn on writes outside project root
   {
-    id: "no-console-in-prod",
-    name: "No Console Logs in Production",
-    description: "Warn about console.log statements in non-test files",
+    id: "R08-no-out-of-project-write",
+    name: "No Out-of-Project Writes",
+    description: "Warn when writing files outside the project directory",
     severity: "warning",
-    check: (ctx) => {
-      if (!ctx.content || !ctx.filePath) return { passed: true, message: "N/A" };
-      if (/\.(test|spec|mock)\./i.test(ctx.filePath)) {
-        return { passed: true, message: "Test file — console allowed" };
-      }
-
-      const consoleCount = (ctx.content.match(/console\.(log|debug|info)\(/g) || []).length;
-      if (consoleCount > 0) {
+    toolPattern: /^(Write|Edit)$/,
+    evaluate: (ctx) => {
+      if (!ctx.filePath || !ctx.projectRoot) return null;
+      if (!ctx.filePath.startsWith(ctx.projectRoot)) {
         return {
-          passed: false,
-          message: `${consoleCount} console.log statement(s) found`,
+          decision: "ask",
+          message: `Writing outside project root: ${ctx.filePath}`,
         };
       }
-
-      return { passed: true, message: "No console logs" };
-    },
-  },
-  {
-    id: "mode-required",
-    name: "Mode Required",
-    description: "All work should happen within a mode",
-    severity: "info",
-    check: (ctx) => {
-      if (!ctx.mode || ctx.mode === "none") {
-        return {
-          passed: false,
-          message: "No active mode. Use /mode <name> to activate.",
-        };
-      }
-      return { passed: true, message: `Active mode: ${ctx.mode}` };
+      return null;
     },
   },
 ];
 
 /**
- * Run all rules against a context.
+ * Evaluate rules against a context. First match wins.
+ * Returns 'approve' if no rule matches.
  */
+export function evaluateRules(
+  context: RuleContext,
+  rules: GuardrailRule[] = BUILTIN_RULES,
+): HookResult {
+  for (const rule of rules) {
+    if (context.toolName && !rule.toolPattern.test(context.toolName)) {
+      continue;
+    }
+
+    const result = rule.evaluate(context);
+    if (result !== null) {
+      return result;
+    }
+  }
+
+  return { decision: "approve", message: "No rules triggered" };
+}
+
+// Legacy compat
+export type RuleResult = HookResult;
 export function checkRules(
   rules: GuardrailRule[],
   context: RuleContext,
-): Map<string, RuleResult> {
-  const results = new Map<string, RuleResult>();
+): Map<string, HookResult> {
+  const results = new Map<string, HookResult>();
 
   for (const rule of rules) {
+    if (context.toolName && !rule.toolPattern.test(context.toolName)) {
+      results.set(rule.id, { decision: "approve", message: "Tool pattern mismatch — skipped" });
+      continue;
+    }
+
     try {
-      results.set(rule.id, rule.check(context));
+      const result = rule.evaluate(context);
+      results.set(rule.id, result ?? { decision: "approve", message: "No issue" });
     } catch (err) {
       results.set(rule.id, {
-        passed: false,
+        decision: "deny",
         message: `Rule check failed: ${err instanceof Error ? err.message : String(err)}`,
       });
     }

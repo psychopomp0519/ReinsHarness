@@ -1,8 +1,7 @@
 ---
 name: reins-dev-mode
 description: >
-  Executes implementation tasks sequentially with automatic verification
-  after each task. Use when the user says "개발 시작", "구현해줘",
+  Use when the user says "개발 시작", "구현해줘",
   "build this", "implement", "코딩 시작", or invokes /mode dev.
   Also triggers after plan approval or when transitioning from plan mode.
 mode: true

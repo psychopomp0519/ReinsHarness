@@ -1,8 +1,6 @@
 ---
 name: reins-plan-mode
 description: >
-  Structures project planning into detailed task breakdowns
-  with acceptance criteria and dependency graphs.
   Use when the user says "plan", "계획", "설계해줘",
   "프로젝트 시작", starts a new project, or invokes /mode plan.
   Also triggers when the user uploads a requirements document

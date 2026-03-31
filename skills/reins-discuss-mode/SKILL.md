@@ -1,8 +1,6 @@
 ---
 name: reins-discuss-mode
 description: >
-  Facilitates multi-agent discussions with dynamic role selection,
-  3-round debate structure, and consensus building.
   Use when the user says "토의", "토론", "discuss", "debate",
   "의견 모아줘", "여러 관점에서", or invokes /mode discuss.
   Also triggers when the user asks for pros/cons analysis

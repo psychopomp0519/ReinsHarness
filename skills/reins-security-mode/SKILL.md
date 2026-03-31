@@ -1,8 +1,6 @@
 ---
 name: reins-security-mode
 description: >
-  Performs 6-layer security verification including secret detection,
-  dependency CVE scanning, SAST, threat modeling, and infrastructure audit.
   Use when the user invokes /mode security or says "보안 검토",
   "security audit", "보안 점검", "취약점 분석".
   This mode requires explicit invocation — it will not auto-trigger.

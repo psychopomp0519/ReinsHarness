@@ -1,7 +1,6 @@
 ---
 name: reins-snapshot
 description: >
-  Saves and restores project snapshots for comparison and rollback.
   Use when the user says "스냅샷", "snapshot", "/snapshot save",
   or wants to create a restore point.
 version: "0.1.0"
