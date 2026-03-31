@@ -3,7 +3,6 @@ name: audio-mix-review
 description: >
   Analyzes audio project files and mix configurations for gain staging, frequency balance, dynamic range, and mastering readiness.
   Use when the user says "review my mix", "check audio levels", "analyze mix quality", or "review mastering settings".
-version: "1.0.0"
 allowed-tools: "Read, Grep, Glob, Bash"
 ---
 

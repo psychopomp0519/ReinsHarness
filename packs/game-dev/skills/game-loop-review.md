@@ -4,7 +4,6 @@ description: >
   Reviews core game loop design — input handling, update cycles, rendering.
   Use when the user asks to review game loop, check frame rate issues,
   or optimize game performance.
-version: "1.0.0"
 allowed-tools: "Read, Grep, Glob, Bash"
 ---
 

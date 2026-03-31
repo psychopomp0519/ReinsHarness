@@ -1,9 +1,8 @@
 ---
 name: hardware-firmware-review
 description: >
-  Reviews firmware source code for memory safety, interrupt handling, peripheral configuration, and embedded best practices.
-  Use when the user says "review firmware code", "check embedded code", "analyze microcontroller code", or "review hardware driver".
-version: "1.0.0"
+  Use when the user says "review firmware", "check embedded code",
+  "펌웨어 검토", or "하드웨어 코드 리뷰".
 allowed-tools: "Read, Grep, Glob, Bash"
 ---
 

@@ -4,7 +4,6 @@ description: >
   Use when the user says "codex review", "코덱스 리뷰",
   "/codex review", or wants an independent code review from Codex.
   Also triggers when bridge mode is active and Codex is configured.
-version: "1.0.0"
 allowed-tools: "Read, Grep, Glob, Bash"
 ---
 

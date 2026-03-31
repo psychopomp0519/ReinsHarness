@@ -4,7 +4,6 @@ description: >
   Use when the user says "adversarial review", "적대적 리뷰",
   "/codex adversarial", or wants Codex to actively try to break
   or find flaws in the current implementation.
-version: "1.0.0"
 allowed-tools: "Read, Grep, Glob, Bash"
 ---
 

@@ -3,7 +3,6 @@ name: devops-pipeline-review
 description: >
   Analyzes CI/CD pipeline configurations for best practices, security, performance, and reliability issues.
   Use when the user says "review my pipeline", "check CI/CD config", "analyze my build pipeline", or "audit deployment workflow".
-version: "1.0.0"
 allowed-tools: "Read, Grep, Glob, Bash"
 ---
 

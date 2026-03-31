@@ -1,9 +1,8 @@
 ---
 name: i18n-coverage-check
 description: >
-  Analyzes codebases for internationalization coverage including untranslated strings, missing locale files, RTL support, and format handling.
-  Use when the user says "check i18n coverage", "find untranslated strings", "review localization", or "check internationalization".
-version: "1.0.0"
+  Use when the user says "check i18n", "find untranslated strings",
+  "다국어 검토", or "번역 커버리지 확인".
 allowed-tools: "Read, Grep, Glob, Bash"
 ---
 

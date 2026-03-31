@@ -3,7 +3,6 @@ name: api-design-review
 description: >
   Reviews API designs for RESTful conventions, consistency, security, and usability across endpoints.
   Use when the user says "review my API", "check API design", "audit my endpoints", or "review REST API".
-version: "1.0.0"
 allowed-tools: "Read, Grep, Glob, Bash"
 ---
 

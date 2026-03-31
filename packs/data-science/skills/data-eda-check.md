@@ -3,7 +3,6 @@ name: data-eda-check
 description: >
   Reviews datasets and performs exploratory data analysis, checking for data quality issues, distributions, correlations, and missing values.
   Use when the user says "review my data", "run EDA", "check data quality", or "explore this dataset".
-version: "1.0.0"
 allowed-tools: "Read, Grep, Glob, Bash"
 ---
 

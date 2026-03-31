@@ -4,7 +4,6 @@ description: >
   Use when the user says "codex rescue", "코덱스 위임",
   "/codex rescue", or wants to delegate a coding task to Codex.
   Triggers when a task is stuck or needs a second implementation attempt.
-version: "1.0.0"
 allowed-tools: "Read, Grep, Glob, Bash, Write"
 ---
 

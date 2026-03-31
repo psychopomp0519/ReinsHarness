@@ -3,7 +3,6 @@ name: video-metadata-review
 description: >
   Reviews video metadata, SEO tags, subtitle files, and descriptive content for completeness and optimization.
   Use when the user says "review video metadata", "check video SEO", "optimize video tags", or "review subtitle file".
-version: "1.0.0"
 allowed-tools: "Read, Grep, Glob, Bash"
 ---
 

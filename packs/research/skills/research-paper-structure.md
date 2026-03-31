@@ -1,9 +1,8 @@
 ---
 name: research-paper-structure
 description: >
-  Checks academic paper structure for section completeness, logical flow, citation format, and adherence to scholarly conventions.
-  Use when the user says "review paper structure", "check my research paper", "analyze paper format", or "validate academic writing".
-version: "1.0.0"
+  Use when the user says "review paper structure",
+  "논문 구조 검토", or "학술 논문 검토".
 allowed-tools: "Read, Grep, Glob, Bash"
 ---
 

@@ -3,7 +3,6 @@ name: docs-quality-check
 description: >
   Reviews technical documentation for completeness, accuracy, clarity, and adherence to style guidelines.
   Use when the user says "review my docs", "check documentation quality", "audit technical docs", or "improve my documentation".
-version: "1.0.0"
 allowed-tools: "Read, Grep, Glob, Bash"
 ---
 

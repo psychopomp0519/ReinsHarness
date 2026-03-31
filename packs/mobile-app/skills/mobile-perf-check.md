@@ -1,9 +1,8 @@
 ---
 name: mobile-perf-check
 description: >
-  Analyzes mobile application code for performance bottlenecks, memory leaks, rendering issues, and battery drain patterns.
-  Use when the user says "check mobile performance", "review app performance", "find performance issues in my app", or "optimize my mobile app".
-version: "1.0.0"
+  Use when the user says "check mobile performance",
+  "앱 성능 검토", or "모바일 최적화".
 allowed-tools: "Read, Grep, Glob, Bash"
 ---
 

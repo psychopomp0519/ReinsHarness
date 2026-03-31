@@ -3,7 +3,6 @@ name: edu-curriculum-check
 description: >
   Reviews curriculum structure for learning progression, coverage completeness, and pedagogical best practices.
   Use when the user says "review my curriculum", "check course structure", "audit learning materials", or "evaluate lesson plan".
-version: "1.0.0"
 allowed-tools: "Read, Grep, Glob, Bash"
 ---
 

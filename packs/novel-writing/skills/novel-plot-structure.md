@@ -4,7 +4,6 @@ description: >
   Analyzes plot structure using story frameworks (3-act, hero's journey, etc.).
   Use when the user asks to review plot, check story structure,
   or analyze narrative pacing.
-version: "1.0.0"
 allowed-tools: "Read, Grep, Glob"
 ---
 

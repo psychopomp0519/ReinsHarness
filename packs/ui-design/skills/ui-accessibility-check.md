@@ -4,7 +4,6 @@ description: >
   Checks UI components for WCAG 2.1 AA compliance.
   Use when the user asks about accessibility, a11y,
   or needs to verify inclusive design requirements.
-version: "1.0.0"
 allowed-tools: "Read, Grep, Glob, Bash"
 ---
 

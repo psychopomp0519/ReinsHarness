@@ -3,7 +3,6 @@ name: legal-contract-review
 description: >
   Analyzes contract documents for clause completeness, risk areas, ambiguous language, and compliance concerns.
   Use when the user says "review this contract", "check contract clauses", "analyze legal terms", or "find contract risks".
-version: "1.0.0"
 allowed-tools: "Read, Grep, Glob, Bash"
 ---
 

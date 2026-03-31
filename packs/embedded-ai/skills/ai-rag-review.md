@@ -1,9 +1,8 @@
 ---
 name: ai-rag-review
 description: >
-  Reviews RAG pipeline implementations for chunking strategy, embedding quality, retrieval accuracy, and context window management.
-  Use when the user says "review RAG pipeline", "check retrieval setup", "analyze vector search", or "review AI retrieval code".
-version: "1.0.0"
+  Use when the user says "review RAG", "check retrieval",
+  "analyze vector search", or "RAG 파이프라인 검토".
 allowed-tools: "Read, Grep, Glob, Bash"
 ---
 

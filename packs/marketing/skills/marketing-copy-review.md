@@ -3,7 +3,6 @@ name: marketing-copy-review
 description: >
   Reviews marketing copy for clarity, persuasiveness, SEO optimization, and brand voice consistency.
   Use when the user says "review my copy", "check SEO", "improve marketing text", or "audit landing page content".
-version: "1.0.0"
 allowed-tools: "Read, Grep, Glob, Bash"
 ---
 

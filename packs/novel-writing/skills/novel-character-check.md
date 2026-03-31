@@ -4,7 +4,6 @@ description: >
   Reviews character consistency — voice, motivation, arc, relationships.
   Use when the user asks to check characters, review character development,
   or verify character consistency across chapters.
-version: "1.0.0"
 allowed-tools: "Read, Grep, Glob"
 ---
 
