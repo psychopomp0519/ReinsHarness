@@ -1,0 +1,18 @@
+name: codex
+version: "1.0.0"
+description: "OpenAI Codex CLI integration — cross-review, task delegation, adversarial review via JSON-RPC app-server protocol"
+author: "Reins Team"
+keywords: [codex, openai, cross-review, delegation, adversarial]
+dependencies: []
+ref: "openai/codex-plugin-cc"
+skills:
+  - codex-review
+  - codex-rescue
+  - codex-adversarial
+commands:
+  - codex-review
+  - codex-rescue
+  - codex-status
+  - codex-cancel
+agents:
+  - codex-delegate

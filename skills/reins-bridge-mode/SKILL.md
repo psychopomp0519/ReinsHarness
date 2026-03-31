@@ -19,7 +19,8 @@ External AI API keys must be configured in `.reins/bridges.json`:
 ```json
 {
   "gemini": { "api_key": "...", "model": "gemini-2.0-flash" },
-  "openai": { "api_key": "...", "model": "gpt-4o" }
+  "openai": { "api_key": "...", "model": "gpt-4o" },
+  "codex": { "transport": "direct" }
 }
 ```
 
@@ -37,6 +38,7 @@ implementation choices, or trade-offs.
 Use each AI's strengths:
 - Gemini: multimodal analysis, large context
 - GPT: creative generation, specific domain knowledge
+- Codex: autonomous coding, task delegation, adversarial testing
 - Claude: code analysis, structured reasoning
 
 ### 4. Rate Limit Bypass
@@ -49,6 +51,9 @@ Generate solutions from multiple AIs and compare.
 
 - `/bridge gemini review <file>` — Gemini code review
 - `/bridge gpt opinion <topic>` — GPT opinion
+- `/bridge codex review <file>` — Codex code review
+- `/bridge codex rescue <task>` — Delegate task to Codex
+- `/bridge codex adversarial <file>` — Adversarial review via Codex
 - `/bridge compare <prompt>` — Multi-AI comparison
 - `/bridge handoff <ai> <context>` — Handoff task
 - `/bridge status` — Show configured bridges

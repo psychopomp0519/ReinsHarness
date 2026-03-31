@@ -7,6 +7,7 @@
 import { loadBridgeConfigs, type BridgeAdapter, type BridgeRequest, type BridgeResponse } from "./adapter.js";
 import { GeminiBridge } from "./gemini.js";
 import { OpenAIBridge } from "./openai.js";
+import { CodexBridge, type CodexConfig } from "./codex.js";
 
 /**
  * Create all configured bridge adapters.
@@ -23,6 +24,9 @@ export function createBridges(projectRoot: string): Map<string, BridgeAdapter> {
       case "openai":
       case "gpt":
         bridges.set(name, new OpenAIBridge(config));
+        break;
+      case "codex":
+        bridges.set(name, new CodexBridge(config as CodexConfig));
         break;
       default:
         // Unknown bridge type — skip
