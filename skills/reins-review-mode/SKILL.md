@@ -47,23 +47,32 @@ Check structural integrity:
 
 ### Layer 6: Browser Verification (conditional)
 
-**Only when UI pack is installed.**
-If ui-design pack is not active: output "Layer 6: Skipped (ui-design pack not installed)"
+**Only when ui-design pack is installed and a browser testing tool is available.**
+If not available: output "Layer 6: Skipped (ui-design pack not installed or no browser tool)"
 
-When active:
-- Visual regression check
-- Responsive layout verification
-- Interaction testing
+When active, use diff-based test plan generation:
+1. Run `git diff HEAD` to identify UI-related changes
+2. Generate a step-by-step browser test plan targeting changed UI behavior
+3. If expect-cli is available: run `npx expect-cli --target unstaged -y`
+4. If Playwright MCP is available: execute test steps via Playwright
+5. If neither: describe manual verification steps for the user
+
+Each test step should verify:
+- Changed components render correctly
+- Interactive elements respond to user input
+- Responsive breakpoints work (mobile, tablet, desktop)
+- No visual regressions in surrounding components
 
 ### Layer 7: Design Verification (conditional)
 
-**Only when UI pack is installed.**
-If ui-design pack is not active: output "Layer 7: Skipped (ui-design pack not installed)"
+**Only when ui-design pack is installed.**
+If not available: output "Layer 7: Skipped (ui-design pack not installed)"
 
 When active:
-- Nielsen heuristic scoring
-- Anti-pattern detection
-- Accessibility audit
+1. Invoke the `ui-design-audit` skill for Nielsen heuristic scoring (/40) + technical audit (/20)
+2. Check against anti-patterns list (especially AI slop patterns)
+3. Minimum passing score: 28/40 Nielsen + 14/20 technical
+4. Priority issues (P0-P1) must be resolved before passing
 
 ## Iteration Protocol
 

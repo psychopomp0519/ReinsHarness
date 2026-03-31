@@ -8,6 +8,7 @@ skills:
   - ui-design-audit
   - ui-accessibility-check
   - ui-component-review
+  - ui-context-gather
 agents:
   - ui-critic
 review_layers:

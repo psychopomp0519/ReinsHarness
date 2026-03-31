@@ -38,6 +38,31 @@ Check against CWE Top 25. Check the reference file at reference/cwe-top-25.md in
 - Cryptographic issues
 - Race conditions
 
+#### Concrete CWE Grep Patterns
+
+Use these regex patterns during SAST scans:
+
+**SQL Injection (CWE-89):**
+- String concatenation in queries: `SELECT.*\+|INSERT.*\+|UPDATE.*\+|DELETE.*\+`
+- Template literals in queries: `` `SELECT.*\$\{` ``
+- Unsanitized input in query builders
+
+**XSS (CWE-79):**
+- `innerHTML\s*=`
+- `document\.write\(`
+- `dangerouslySetInnerHTML` without a sanitization call (e.g., DOMPurify) nearby
+- `v-html=` (Vue), `[innerHTML]=` (Angular)
+
+**Command Injection (CWE-78):**
+- `exec\(` / `execSync\(` with string concatenation or template literals
+- `system\(` with user-controlled input
+- `child_process` spawn/exec using `req\.|argv|params|query`
+
+**Path Traversal (CWE-22):**
+- `req\.params` or `req\.query` used inside `fs\.readFile|fs\.writeFile|fs\.access`
+- `\.\.\/` sequences in user-controlled paths
+- Missing `path.resolve` / `path.normalize` before file access
+
 ### Layer 4: STRIDE Threat Modeling
 
 Apply STRIDE model (see reference/stride-model.md):
@@ -66,6 +91,31 @@ Check deployment configuration:
 - CSP headers
 - TLS/SSL configuration
 - Kubernetes: RBAC, network policies, secrets management
+
+## Pre-commit Gate
+
+Before suggesting or creating a commit, run the following checks automatically:
+
+1. **Layer 1 (Secrets):** Scan all staged files for exposed secrets, API keys, tokens, passwords.
+2. **Layer 3 (SAST/CWE):** Run the concrete CWE grep patterns above against staged changes.
+
+**Severity-based actions:**
+
+| Severity | Action |
+|----------|--------|
+| Critical | **Block commit suggestion.** Do not proceed until the finding is resolved. |
+| High | Warn the user prominently but allow commit if acknowledged. |
+| Medium | Output informational note; do not block. |
+
+A finding is **Critical** if it matches:
+- Exposed secrets (hardcoded API keys, passwords, private keys in source)
+- SQL injection or command injection with direct user input
+
+A finding is **High** if it matches:
+- XSS patterns (innerHTML, document.write) with unsanitized data
+- Path traversal with user-controlled input
+
+All other CWE pattern matches are **Medium**.
 
 ## Commands
 
