@@ -237,6 +237,25 @@ export const BUILTIN_RULES: GuardrailRule[] = [
       return null;
     },
   },
+
+  // R12: Block Write/Edit to sensitive files
+  {
+    id: "R12-no-write-sensitive",
+    name: "No Write to Sensitive Files",
+    description: "Block Write/Edit to .env, .git/, SSH keys, and other sensitive paths",
+    severity: "error",
+    toolPattern: /^(Write|Edit|MultiEdit)$/,
+    evaluate: (ctx) => {
+      if (!ctx.filePath) return null;
+      if (/\.(env|pem|key|p12|pfx)$|\.git\/|\.ssh\/|credentials\.json|secrets?\.(json|yaml)/.test(ctx.filePath)) {
+        return {
+          decision: "deny",
+          message: `Write blocked: "${ctx.filePath}" is a sensitive file`,
+        };
+      }
+      return null;
+    },
+  },
 ];
 
 /**

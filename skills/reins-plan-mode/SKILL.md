@@ -10,6 +10,19 @@ allowed-tools: "Read, Grep, Glob, Bash, Write"
 
 Transform requirements into an actionable, verifiable implementation plan.
 
+<HARD-GATE>
+Do NOT write any code, scaffold any project, or take any implementation action
+until you have presented a design and the user has approved it.
+This applies to EVERY project regardless of perceived simplicity.
+</HARD-GATE>
+
+## Anti-Pattern: "This Is Too Simple To Need A Design"
+
+Every project goes through this process. A todo list, a single-function utility,
+a config change — all of them. "Simple" projects are where unexamined assumptions
+cause the most wasted work. The design can be short, but you MUST present it
+and get approval.
+
 ## Workflow
 
 ### Step 1: Requirements Gathering (Socratic)
@@ -39,6 +52,9 @@ Propose high-level architecture:
 - Data flow
 - Key technical decisions with rationale
 
+Propose 2-3 different approaches with trade-offs.
+Lead with your recommended option and explain why.
+
 ### Step 4: Task Breakdown
 
 Break work into Phases, each Phase into Tasks.
@@ -57,6 +73,9 @@ Rules:
 - Every Task MUST have Acceptance Criteria
 - Place checkpoints at Phase boundaries → auto-trigger review mode
 - Maximum 5 Phases, 8 Tasks per Phase
+- NEVER use "TBD", "TODO", "implement later", "similar to Task N"
+- Every code step must include exact file paths and expected output
+- "Add appropriate error handling" is a plan failure — specify WHAT handling
 
 ### Step 5: Risk Analysis
 
@@ -65,6 +84,14 @@ Identify top 3~5 risks:
 - Scope risks
 - Dependency risks
 Each with mitigation strategy.
+
+### Step 5.5: Plan Self-Review
+
+Before presenting to the user, review the plan yourself:
+1. **Placeholder scan**: Any "TBD", "TODO", incomplete sections? Fix them now.
+2. **Internal consistency**: Do sections contradict each other?
+3. **Scope check**: Is this focused enough for a single implementation cycle?
+4. **Ambiguity check**: Could any requirement be interpreted two ways? Pick one.
 
 ### Step 6: User Approval
 

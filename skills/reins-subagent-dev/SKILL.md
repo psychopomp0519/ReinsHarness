@@ -113,3 +113,41 @@ prompt: |
 상태: [STATUS] | 모델: [opus/sonnet]
 변경: [files] | 다음: [next task or review]
 ```
+
+## Never
+
+<HARD-GATE>
+- Never skip reviews (spec compliance OR code quality)
+- Never dispatch multiple implementation subagents in parallel (conflicts)
+- Never make subagent read plan file directly (provide full text in prompt)
+- Never accept "close enough" on spec compliance
+- Never start code quality review before spec compliance passes
+- Never move to next task while either review has open issues
+</HARD-GATE>
+
+## Implementer Self-Review (include in every agent prompt)
+
+Before reporting back, the implementer must verify:
+1. **Completeness**: Did I fully implement everything in the spec?
+2. **Quality**: Are names clear and accurate?
+3. **Discipline**: Did I avoid overbuilding (YAGNI)?
+4. **Testing**: Do tests verify behavior, not just mock behavior?
+
+## When to Escalate
+
+It is always OK to stop and say "this is too hard for me."
+
+STOP and report BLOCKED when:
+- The task requires architectural decisions with multiple valid approaches
+- You need to understand code beyond what was provided
+- You feel uncertain about whether your approach is correct
+
+## Review Loop
+
+If reviewer finds issues:
+1. Same implementer agent fixes them
+2. Reviewer reviews again
+3. Repeat until approved
+4. Do NOT skip the re-review
+
+After ALL tasks complete: dispatch a final full-implementation reviewer.

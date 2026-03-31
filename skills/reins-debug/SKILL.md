@@ -118,3 +118,33 @@ allowed-tools: "Read, Grep, Glob, Bash"
 - **버그 수정 완료 시** → `/review` 스킬을 suggest하여 수정 사항 검토
 - **아키텍처 이슈 발견 시** → `/discuss` 스킬을 suggest하여 설계 논의
 - **수정이 여러 파일에 걸쳐 복잡한 경우** → `/subagent-dev`로 전환 고려
+
+## When to Use (ESPECIALLY)
+
+Use this ESPECIALLY when:
+- Under time pressure (emergencies make guessing tempting)
+- "Just one quick fix" seems obvious
+- You've already tried multiple fixes
+
+## Multi-Component Diagnosis
+
+When the system has multiple components (API → service → database):
+BEFORE proposing fixes, add diagnostic instrumentation:
+- Log what data enters/exits each component boundary
+- Verify environment/config propagation at each layer
+- Run once to gather evidence showing WHERE it breaks
+
+## Common Rationalizations
+
+| Rationalization | Reality |
+|----------------|---------|
+| "Reference too long, I'll adapt" | Partial understanding guarantees bugs. Read completely. |
+| "I see the problem, let me fix it" | Seeing symptoms ≠ understanding root cause. |
+| "One more fix attempt" (after 2+) | 3+ failures = architectural problem. |
+| "It works on my machine" | Verify in the actual failing environment. |
+
+## When You Don't Know
+
+- Say "I don't understand X"
+- Don't pretend to know
+- Ask for help

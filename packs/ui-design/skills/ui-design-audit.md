@@ -13,6 +13,10 @@ You audit UI/UX design quality using a dual-scoring system.
 
 - Anti-patterns: `packs/ui-design/anti-patterns.md`
 - Heuristics scoring rubric: `packs/ui-design/skills/reference/heuristics-scoring.md`
+- Cognitive load: `reference/cognitive-load.md`
+- Personas: `reference/personas.md`
+- Typography: `reference/typography.md`
+- Color: `reference/color.md`
 
 ## Process
 
@@ -24,12 +28,14 @@ You audit UI/UX design quality using a dual-scoring system.
    - **Theming** — Design tokens, dark/light mode support, consistent spacing scale.
    - **Responsive** — Breakpoint coverage, fluid layout, touch targets.
    - **Anti-Patterns** — Check against `anti-patterns.md`; 4 = none found, 0 = pervasive.
-4. Tag every finding with a priority:
+4. **Cognitive Load Check** — Review against cognitive-load.md violations. Flag any of the 8 named violations found.
+5. **Persona Walkthrough** — Select 2-3 relevant personas from personas.md. Walk through the interface from each perspective. Flag friction points.
+6. Tag every finding with a priority:
    - **P0 Critical** — Blocks usability or accessibility; fix before ship.
    - **P1 Major** — Significant UX degradation; fix in current cycle.
    - **P2 Moderate** — Noticeable quality issue; schedule for next cycle.
    - **P3 Minor** — Polish item; address opportunistically.
-5. Generate the audit report in the output format below.
+7. Generate the audit report in the output format below.
 
 ## Output Format
 

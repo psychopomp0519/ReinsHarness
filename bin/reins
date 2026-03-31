@@ -119,6 +119,7 @@ register_all_builtin() {
     ["bridge"]="reins-bridge-mode"
     ["subagent-dev"]="reins-subagent-dev"
     ["debug"]="reins-debug"
+    ["session-wrap"]="reins-session-wrap"
   )
 
   for short in "${!aliases[@]}"; do

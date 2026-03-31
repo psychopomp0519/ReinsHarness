@@ -51,12 +51,63 @@ Analyze performance and extract actionable insights.
 - `/retro project` — Analyze full project history
 - `/retro weekly` — Last 7 days summary
 - `/retro compare <a> <b>` — Compare two time periods
+- `/retro <N>d` — Analyze last N days (e.g., `/retro 7d`, `/retro 14d`, `/retro 30d`)
+- `/retro <N>h` — Analyze last N hours (e.g., `/retro 24h`)
+
+## Time-Windowed Analysis
+
+When a time argument is provided (e.g., `7d`, `24h`):
+1. Parse the number and unit (d=days, h=hours)
+2. For days: align to midnight — use `git log --since="<N> days ago 00:00"`
+3. For hours: use `git log --since="<N> hours ago"`
+4. Apply the same 5-category analysis to the filtered git log
+
+## Persistent Retro History
+
+Save each retro as a snapshot to `.reins/retros/retro-<YYYY-MM-DD>.json` containing:
+- Date, time window, all computed metrics, top insights, action items
+
+## Trend Comparison
+
+When a previous retro snapshot exists:
+1. Load the most recent `.reins/retros/retro-*.json`
+2. Compare metrics and show deltas with directional arrows:
+   - ↑ improved, ↓ regressed, → unchanged
+3. Display as a Before/After table:
+
+```
+| Metric            | Previous | Current | Δ   |
+|-------------------|----------|---------|-----|
+| Commits           | 12       | 18      | ↑ +6 |
+| Net LOC           | +340     | +280    | ↓ -60 |
+| Focus score       | 72%      | 85%     | ↑ +13% |
+```
+
+## Work Session Detection
+
+Identify coding sessions from commit timestamps:
+- **Gap threshold**: 45 minutes between commits = new session boundary
+- Categorize each session:
+  - **deep**: 50+ minutes duration
+  - **medium**: 20-50 minutes duration
+  - **micro**: <20 minutes duration
+- Report: session count, avg duration, category breakdown
+
+## Focus Score
+
+Calculate as: `% of commits in the most-changed directory`
+- High focus (>70%): deep, concentrated work
+- Medium focus (40-70%): moderate context switching
+- Low focus (<40%): scattered across many areas
 
 ## Output
 
 Generate a retro report using `templates/outputs/retro.md` format.
 Include:
 - Metrics table for each category
+- Session analysis (count, types, avg duration)
+- Focus score with interpretation
+- Trend comparison (if previous snapshot exists)
 - What went well (top 3)
 - What could improve (top 3)
 - Action items for next iteration
