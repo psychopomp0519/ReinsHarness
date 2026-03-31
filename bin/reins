@@ -410,12 +410,30 @@ cmd_pack() {
       for pack_dir in "$REINS_HOME"/packs/*/; do
         if [[ -f "${pack_dir}PACK.yaml" ]]; then
           local pname="$(basename "$pack_dir")"
-          # Check if installed (has symlinks in ~/.claude/skills/)
-          local installed=""
-          if ls "$CLAUDE_DIR/skills/" 2>/dev/null | grep -q "$pname" 2>/dev/null; then
-            installed="${GREEN}✅${NC}"
-          else
-            installed="⬜"
+          # Check if installed by checking if any pack skill is linked
+          local installed="⬜"
+          if [[ -d "${pack_dir}skills" ]]; then
+            for sf in "${pack_dir}skills/"*.md; do
+              if [[ -f "$sf" ]]; then
+                local sn="$(basename "$sf" .md)"
+                if [[ -L "$CLAUDE_DIR/skills/$sn/SKILL.md" ]] || [[ -L "$CLAUDE_DIR/skills/$sn" ]]; then
+                  installed="${GREEN}✅${NC}"
+                  break
+                fi
+              fi
+            done
+            # Also check subdirectory skills
+            if [[ "$installed" == "⬜" ]]; then
+              for sd in "${pack_dir}skills/"*/; do
+                if [[ -f "${sd}SKILL.md" ]]; then
+                  local sn="$(basename "$sd")"
+                  if [[ -L "$CLAUDE_DIR/skills/$sn" ]]; then
+                    installed="${GREEN}✅${NC}"
+                    break
+                  fi
+                fi
+              done
+            fi
           fi
           local desc=""
           desc="$(grep '^description:' "${pack_dir}PACK.yaml" 2>/dev/null | head -1 | sed 's/^description:\s*["]*//;s/["]*$//' | cut -c1-60)"
