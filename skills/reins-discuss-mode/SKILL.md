@@ -25,11 +25,15 @@ Analyze the discussion topic to determine:
 
 Select 3~4 agents from the role pool based on topic category:
 
-| Topic Category | Selected Agents |
-|---------------|----------------|
+Role pool: advocate, critic, pragmatist, innovator, user-advocate, domain-expert (6 total).
+When a domain pack is active, domain-expert auto-adapts to that domain.
+
+| Topic Category | Selected Agents (3~4) |
+|---------------|----------------------|
 | Technical Design | critic, pragmatist, innovator |
 | User Experience | user-advocate, critic, innovator |
 | Business Decision | advocate, critic, pragmatist |
+| Domain-Specific (pack active) | domain-expert, critic, pragmatist |
 | Complex / Mixed | advocate, critic, pragmatist, innovator |
 
 Present the selection to the user:
