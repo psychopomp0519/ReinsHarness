@@ -240,6 +240,11 @@ reins doctor           # 환경 진단
 
 자세한 기여 방법은 [CONTRIBUTING.md](CONTRIBUTING.md)를 참고하세요.
 
+## 상세 문서
+
+- [전체 기능 상세](docs/FEATURES.md) — 모든 모드, 훅, 가드레일, 팩의 상세 설명
+- [상세 명세서](docs/SPECIFICATION.md) — 아키텍처, 프로토콜, 스키마, 레퍼런스
+
 ## 라이선스
 
 MIT
